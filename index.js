@@ -15,15 +15,13 @@ const ExpressError = require('./utils/ExpressError');
 const User = require('./models/kts-admin/user')
 const methodOverride = require("method-override");
 const expressLayouts = require('express-ejs-layouts')
-
-const { isEventOwner, isInvited } = require('./middleware/loggedIn')
-const { Users } = require('./middleware/fetchFromCSV')
 const nodemailer = require('nodemailer')
 
 //Routes
 const adminRoute = require('./routes/kts-admin')
 const userRoutes = require('./routes/users');
 const eventOwner = require('./routes/event-owner')
+const invitedIndividual = require('./routes/invited-individual')
 
 //db connection
 connection()
@@ -72,6 +70,7 @@ app.use((req, res, next) => {
 app.use('/', userRoutes);
 app.use('/kts-admin', adminRoute)
 app.use('/event-owner', eventOwner)
+app.use('/invited-individual', invitedIndividual)
 
 
 app.post('/contact', (req, res) => {
@@ -99,52 +98,6 @@ app.post('/contact', (req, res) => {
 	res.redirect('contact')
 })
 
-
-app.get('/password-grant', (req, res) => {
-	res.render('Landing-Pages/password-grant', { layout: "./layouts/login-layout", title: "Password Grant" })
-})
-
-app.post('/password-grant', async (req, res) => {
-	let transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: process.env.EMAIL,
-			pass: process.env.PASSWORD
-		}
-	});
-	let hashPassword
-	for (let i = 0; i < Users.length; i++) {
-		hashPassword = null
-		var mailOptions = {
-			from: process.env.EMAIL,
-			to: Users[i].email.toString(),
-			subject: 'Password Granted',
-			text: 'Dear Client ' + Users[i].email.toString() + ', your granted password is: ' + Users[i].password.toString()
-		};
-		let salt = await bcrypt.genSalt(10)
-		hashPassword = await bcrypt.hash(Users[i].password, salt)
-		Users[i].password = hashPassword
-		Users[i].isAdmin = 0
-		let emailExist = await User.findOne({ email: Users[i].email.toString() })
-		if (emailExist) {
-			console.log(Users[i].email + ' exists already')
-		}
-		else {
-			let savedUser = await Users[i].save()
-			transporter.sendMail(mailOptions, (err, res) => {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					console.log('success')
-				}
-			});
-		}
-	}
-	res.redirect('/password-grant')
-})
-
-
 app.post('/subscribe', (req, res) => {
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -170,10 +123,6 @@ app.post('/subscribe', (req, res) => {
 	res.redirect('/')
 })
 
-
-app.get('/invited-individual', isInvited, (req, res) => {
-	res.send('welcome to invited individual page')
-})
 
 app.all('*', (req, res, next) => {
 	next(new ExpressError('Page Not Found', 404))
