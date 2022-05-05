@@ -47,10 +47,10 @@ router.route('/login')
 			redirectUrl = req.session.returnTo || '/kts-admin/home';
 		}
 		else if (isAdmin == 1) {
-			redirectUrl = req.session.returnTo || '/event-owner/home';
+			redirectUrl = req.session.returnTo || `/event-owner/home/${req.user.eventId}`;
 		}
 		else if (isAdmin == 0) {
-			redirectUrl = req.session.returnTo || '/invited-individual';
+			redirectUrl = req.session.returnTo || `/invited-individual/home/${req.user.eventId}`;
 		}
 		else {
 			redirectUrl = req.session.returnTo || '/login';
