@@ -1,5 +1,5 @@
 <div class="boxOwner">
-	<h2 class="header_two">Agreed On Packages</h2>
+	<h2 class="header_two">Available Packages</h2>
 	<div class="row">
 		<div class="col-md-12">
 			<% for(let package of currentEvent.packages){ %>
@@ -19,16 +19,6 @@
 
 				</div>
 				<% } %>
-		</div>
-	</div>
-	<h2 class="header_two">Insert Invitees Emails List</h2>
-	<div class="row">
-		<div class="col-md-12 center-element">
-			<form class="form-group" enctype="multipart/form-data" action="/event-owner/home/<%= eventid  %> "
-				method="POST">
-				<input type="file" class="form-control margin-element" name="myFile" id="myFile" required />
-				<input type="submit" class="btn btn-primary">
-			</form>
 		</div>
 	</div>
 </div>
