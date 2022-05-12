@@ -5,7 +5,7 @@ if (process.env.NODE_ENV !== "production") {
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const port = 3000
+const port = process.env.PORT;
 const path = require('path')
 const flash = require('connect-flash');
 const passport = require('passport');
@@ -207,6 +207,7 @@ app.use((err, req, res, next) => {
 	if (!err.message) err.message = 'Oh No, Something Went Wrong!'
 	res.status(statusCode).render('error', { title: "Error", err })
 })
+
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`)
