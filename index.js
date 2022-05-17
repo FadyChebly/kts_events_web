@@ -172,31 +172,6 @@ app.post('/contact', (req, res) => {
 	res.redirect('contact')
 })
 
-app.post('/subscribe', (req, res) => {
-	let transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: process.env.EMAIL,
-			pass: process.env.PASSWORD
-		}
-	});
-	var mailOptions = {
-		from: process.env.EMAIL,
-		to: 'codebookinc@gmail.com, fady.chebly1@gmail.com',
-		subject: 'Email Newsletter Subscription Request',
-		text: 'Dear KTS Administration Team,\n\n\nKindly approve & accept the request for the subscription of this email,\n' + req.body.email + '\nin order to complete the subscription to your Email Newsletter. \n \n \n \n' + 'Thank you & Best Regards'
-	};
-	transporter.sendMail(mailOptions, (err, res) => {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			console.log('success')
-		}
-	});
-	res.redirect('/')
-})
-
 
 app.all('*', (req, res, next) => {
 	next(new ExpressError('Page Not Found', 404))

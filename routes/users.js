@@ -3,11 +3,16 @@ const router = express.Router();
 const passport = require('passport');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/kts-admin/user');
+const { newsLetterSubscribe } = require('../middleware/emailHandler')
 
 
-router.get('/', (req, res) => {
-	res.render('Landing-Pages/home', { title: "KTS" })
-})
+router.route('/')
+	.get((req, res) => {
+		res.render('Landing-Pages/home', { title: "KTS" })
+	})
+	.post((req, res) => {
+		newsLetterSubscribe(req, res)
+	})
 
 router.get('/about', (req, res) => {
 	res.render('Landing-Pages/about', { title: "About" })
