@@ -21,7 +21,7 @@ POST http://localhost:3000/register
 Content-Type: application/json
 
 {
-	"username":"eventowner@gmail.com",
-	"password":"event",
-	"isAdmin": 1
+	"username":"admin@gmail.com",
+	"password":"admin",
+	"isAdmin": 2
 }
