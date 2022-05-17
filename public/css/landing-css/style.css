@@ -398,6 +398,7 @@ ol {
 
 .hero-section .hero-text {
 	padding-top: 1.5em;
+	padding-bottom: 1.5em;
 }
 
 .hero-section .hero-text span {
@@ -2209,6 +2210,7 @@ ol {
 /* Medium Device: 1200px */
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
+
 	.nav-menu .mainmenu ul li {
 		margin-right: 25px;
 	}
@@ -2338,6 +2340,12 @@ ol {
 }
 
 /* Tablet Device: 768px */
+@media only screen and (min-width:700px) {
+	.memberContainer {
+		display: flex;
+		justify-content: center;
+	}
+}
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
 	.nav-menu .primary-btn.top-btn {
