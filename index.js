@@ -4,8 +4,13 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require('express')
 const app = express()
+<<<<<<< HEAD
+const connection = require('./db')
+const port = process.env.PORT || 3000
+=======
 const mongoose = require('mongoose')
 const port = process.env.PORT;
+>>>>>>> master
 const path = require('path')
 const flash = require('connect-flash');
 const passport = require('passport');
