@@ -16,7 +16,7 @@
 # 	"email": "elias@gmail.com",
 # 	"password":"Tanous1258"
 # }
-
+//test
 POST http://localhost:3000/register
 Content-Type: application/json
 
