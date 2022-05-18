@@ -146,30 +146,30 @@ app.use('/event-owner', eventOwner)
 app.use('/invited-individual', invitedIndividual)
 
 
-// app.post('/contact', (req, res) => {
-// 	let transporter = nodemailer.createTransport({
-// 		service: 'gmail',
-// 		auth: {
-// 			user: process.env.EMAIL,
-// 			pass: process.env.PASSWORD
-// 		}
-// 	});
-// 	var mailOptions = {
-// 		from: req.body.name + '&lt;' + process.env.EMAIL + '&gt;',
-// 		to: 'codebookinc@gmail.com, fady.chebly1@gmail.com',
-// 		subject: 'Message from the Contact Us',
-// 		text: req.body.feedback
-// 	};
-// 	transporter.sendMail(mailOptions, (err, res) => {
-// 		if (err) {
-// 			console.log(err);
-// 		}
-// 		else {
-// 			console.log('success')
-// 		}
-// 	});
-// 	res.redirect('contact')
-// })
+app.post('/contact', (req, res) => {
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: process.env.EMAIL,
+			pass: process.env.PASSWORD
+		}
+	});
+	var mailOptions = {
+		from: req.body.name + '&lt;' + process.env.EMAIL + '&gt;',
+		to: 'codebookinc@gmail.com, fady.chebly1@gmail.com',
+		subject: 'Message from the Contact Us',
+		text: req.body.feedback
+	};
+	transporter.sendMail(mailOptions, (err, res) => {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log('success')
+		}
+	});
+	res.redirect('contact')
+})
 
 
 app.all('*', (req, res, next) => {
