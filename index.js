@@ -4,8 +4,13 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require('express')
 const app = express()
+<<<<<<< HEAD
 const connection = require('./db')
 const port = process.env.PORT || 3000
+=======
+const mongoose = require('mongoose')
+const port = process.env.PORT;
+>>>>>>> master
 const path = require('path')
 const flash = require('connect-flash');
 const passport = require('passport');
@@ -16,6 +21,10 @@ const User = require('./models/kts-admin/user')
 const methodOverride = require("method-override");
 const expressLayouts = require('express-ejs-layouts')
 const nodemailer = require('nodemailer')
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+
+const MongoDBStore = require("connect-mongo")(session);
 
 //Routes
 const adminRoute = require('./routes/kts-admin')
@@ -24,7 +33,16 @@ const eventOwner = require('./routes/event-owner')
 const invitedIndividual = require('./routes/invited-individual')
 
 //db connection
-connection()
+mongoose.connect(process.env.CONNECTION_STRING, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error"));
+db.once("open", () => {
+	console.log("Database Connected");
+});
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
@@ -35,10 +53,25 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
-
+app.use(mongoSanitize({
+	replaceWith: '_'
+}))
 
 //reorganise !!session conf for passport
+
+const store = new MongoDBStore({
+	url: process.env.CONNECTION_STRING,
+	secret: 'thisshouldbeabettersecret!',
+	touchAfter: 24 * 60 * 60
+});
+
+store.on("error", function (e) {
+	console.log("SESSION STORE ERROR", e)
+})
+
 const sessionConfig = {
+	store,
+	name: 'session',
 	secret: 'thisshouldbeabettersecret!',
 	resave: false,
 	saveUninitialized: true,
@@ -49,8 +82,54 @@ const sessionConfig = {
 	}
 }
 
+// const scriptSrcUrls = [
+//     "https://stackpath.bootstrapcdn.com/",
+//     "https://api.tiles.mapbox.com/",
+//     "https://api.mapbox.com/",
+//     "https://kit.fontawesome.com/",
+//     "https://cdnjs.cloudflare.com/",
+//     "https://cdn.jsdelivr.net",
+// ];
+// const styleSrcUrls = [
+//     "https://kit-free.fontawesome.com/",
+//     "https://stackpath.bootstrapcdn.com/",
+//     "https://api.mapbox.com/",
+//     "https://api.tiles.mapbox.com/",
+//     "https://fonts.googleapis.com/",
+//     "https://use.fontawesome.com/",
+// ];
+// const connectSrcUrls = [
+//     "https://api.mapbox.com/",
+//     "https://a.tiles.mapbox.com/",
+//     "https://b.tiles.mapbox.com/",
+//     "https://events.mapbox.com/",
+// ];
+// const fontSrcUrls = [];
+// app.use(
+//     helmet.contentSecurityPolicy({
+//         directives: {
+//             defaultSrc: [],
+//             connectSrc: ["'self'", ...connectSrcUrls],
+//             scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+//             styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+//             workerSrc: ["'self'", "blob:"],
+//             objectSrc: [],
+//             imgSrc: [
+//                 "'self'",
+//                 "blob:",
+//                 "data:",
+//                 "https://res.cloudinary.com/douqbebwk/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+//                 "https://images.unsplash.com/",
+//             ],
+//             fontSrc: ["'self'", ...fontSrcUrls],
+//         },
+//     })
+// );
+
+
 app.use(session(sessionConfig))
 app.use(flash());
+// app.use(helmet());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -98,31 +177,6 @@ app.post('/contact', (req, res) => {
 	res.redirect('contact')
 })
 
-app.post('/subscribe', (req, res) => {
-	let transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: process.env.EMAIL,
-			pass: process.env.PASSWORD
-		}
-	});
-	var mailOptions = {
-		from: process.env.EMAIL,
-		to: 'codebookinc@gmail.com, fady.chebly1@gmail.com',
-		subject: 'Email Newsletter Subscription Request',
-		text: 'Dear KTS Administration Team,\n\n\nKindly approve & accept the request for the subscription of this email,\n' + req.body.email + '\nin order to complete the subscription to your Email Newsletter. \n \n \n \n' + 'Thank you & Best Regards'
-	};
-	transporter.sendMail(mailOptions, (err, res) => {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			console.log('success')
-		}
-	});
-	res.redirect('/')
-})
-
 
 app.all('*', (req, res, next) => {
 	next(new ExpressError('Page Not Found', 404))
@@ -133,6 +187,7 @@ app.use((err, req, res, next) => {
 	if (!err.message) err.message = 'Oh No, Something Went Wrong!'
 	res.status(statusCode).render('error', { title: "Error", err })
 })
+
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`)

@@ -92,3 +92,45 @@ module.exports.invitedIndividualEmail = async (req, res, eventId) => {
 		})
 
 }
+
+module.exports.newsLetterSubscribe = (req, res) => {
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: process.env.EMAIL,
+			pass: process.env.PASSWORD
+		}
+	});
+	var mailOptions = {
+		from: 'KTS event website',
+		to: process.env.EMAIL,
+		subject: 'Newsletter Subscription Request',
+		text: 'Hello KTS Team,\n\nKindly note that: ' + req.body.email + ' has requested to subscribe to our Events newsLetter. \n \n' + 'Thank you & Best Regards'
+	};
+	transporter.sendMail(mailOptions, (err, res) => {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log('KTS success')
+		}
+	});
+
+	var mailOptions = {
+		from: 'KTS event website',
+		to: req.body.email,
+		subject: 'Newsletter Subscription Confirmation',
+		text: 'Hello from KTS Team,\n\nKindly note that your newsLetter subscription request is being handled by our team. \n \n' + 'Thank you & Best Regards'
+	};
+	transporter.sendMail(mailOptions, (err, res) => {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log('customer success')
+		}
+	});
+
+	res.redirect('/')
+}
+
