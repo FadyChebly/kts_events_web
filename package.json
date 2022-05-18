@@ -8,25 +8,17 @@
 		"bcryptjs": "^2.4.3",
 		"cloudinary": "^1.29.1",
 		"connect-flash": "^0.1.1",
-<<<<<<< HEAD
-=======
 		"connect-mongo": "^3.2.0",
->>>>>>> master
 		"cookie-parser": "^1.4.6",
 		"csv-parser": "^3.0.0",
 		"dotenv": "^16.0.0",
 		"ejs": "^3.1.7",
 		"express": "^4.17.3",
 		"express-ejs-layouts": "^2.5.1",
-<<<<<<< HEAD
-		"express-session": "^1.17.2",
-		"fs": "0.0.1-security",
-=======
 		"express-mongo-sanitize": "^2.2.0",
 		"express-session": "^1.17.2",
 		"fs": "0.0.1-security",
 		"helmet": "^5.0.2",
->>>>>>> master
 		"joi": "^17.6.0",
 		"jsonwebtoken": "^8.5.1",
 		"method-override": "^3.0.0",
