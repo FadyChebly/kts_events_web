@@ -2257,7 +2257,7 @@ ol {
 	.newHero {
 		padding-top: 55px;
 		position: relative;
-		height: 35vh;
+		height: 55vh;
 	}
 
 	.hero-section .hero-text {
@@ -2393,6 +2393,12 @@ ol {
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
+	.newHero {
+		padding-top: 35px;
+		position: relative;
+		height: 45vh;
+	}
+
 	.nav-menu .primary-btn.top-btn {
 		display: none;
 	}
@@ -2416,7 +2422,7 @@ ol {
 	.newHero {
 		padding-top: 35px;
 		position: relative;
-		height: 30vh;
+		height: 43vh;
 	}
 
 	.member-item {
@@ -2555,7 +2561,7 @@ ol {
 	.newHero {
 		padding-top: 25px;
 		position: relative;
-		height: 30vh;
+		height: 35vh;
 	}
 
 	.newslatter-inner {
