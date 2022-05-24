@@ -107,7 +107,7 @@ router.route('/home/:eventid')
 					})
 				}
 				fs.unlinkSync(directory)
-				res.redirect('/event-owner/home')
+				res.redirect(`/event-owner/home/${eventid}`)
 			}).catch((error) => {
 				console.log(`Handling error as we received ${error}`);
 			});

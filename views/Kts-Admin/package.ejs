@@ -1,11 +1,41 @@
-<div class="box">
+<div class="box" style="width: 55%;">
 	<h2 class="header_two">Package Details</h2>
 	<% if(hasPackage){ %>
 		<form action="/kts-admin/<%= id %>/package/<%= packageId %>" method="post">
 			<input type="text" class="form-control margin-element" name="title" value="<%= package.title %> ">
 			<textarea class="form-control margin-element" type="text" name="description" cols="50"
 				rows="5"><%= package.description %></textarea>
-			<input class="form-control margin-element" type="number" name="price" value="<%= package.price %>">
+			<textarea type=" text" name="priceInclude" placeholder="Prices Includes" class="form-control margin-element"
+				rows="7" cols="60"><%= package.priceInclude %> </textarea>
+			<textarea type=" text" name="priceExclude" placeholder="Prices Excludes" class="form-control margin-element"
+				rows="7" cols="60"><%= package.priceExclude %></textarea>
+			<textarea type=" text" name="priceDemand" placeholder="On Demand Prices" class="form-control margin-element"
+				rows="7" cols="60"><%= package.priceDemand %></textarea>
+
+			<h4>First Option</h4>
+			<textarea type=" text" name="option1" placeholder="First Option" class="form-control margin-element"
+				rows="3" cols="20"><%= package.packageOption[0].optionDescription %> </textarea>
+			<input class="form-control margin-element" type="number" name="price1" placeholder="Option Price 1"
+				value="<%= package.packageOption[0].price %>">
+
+			<h4>Second Option</h4>
+			<textarea type=" text" name="option2" placeholder="Second Option" class="form-control margin-element"
+				rows="3" cols="20"><%= package.packageOption[1].optionDescription %></textarea>
+			<input class="form-control margin-element" type="number" name="price2" placeholder="Option Price 2"
+				value="<%= package.packageOption[1].price %>">
+
+			<h4>Third Option</h4>
+			<textarea type=" text" name="option3" placeholder="Third Option" class="form-control margin-element"
+				rows="3" cols="20"><%= package.packageOption[2].optionDescription %></textarea>
+			<input class="form-control margin-element" type="number" name="price3" placeholder="Option Price 3"
+				value="<%= package.packageOption[2].price %>">
+
+			<h4>Fourth Option</h4>
+			<textarea type=" text" name="option4" placeholder="Fourth Option" class="form-control margin-element"
+				rows="3" cols="20"><%= package.packageOption[3].optionDescription %></textarea>
+			<input class="form-control margin-element" type="number" name="price4" placeholder="Option Price 4"
+				value="<%= package.packageOption[3].price %>">
+
 			<button class="button" style="width: 100%;">Submit</button>
 		</form>
 		<form action="/kts-admin/delete/package/<%=packageId%>/event/<%= id %>?_method=DELETE" method="POST">
@@ -14,11 +44,38 @@
 		<%} else{ %>
 			<form action="/kts-admin/event/<%= id %>/package" method="post" novalidate class="validated-form"
 				enctype="multipart/form-data">
+				<input class="form-control margin-element" type="file" name="image">
 				<input class="form-control margin-element" type="text" name="title" placeholder="Title">
 				<textarea type=" text" name="description" placeholder="Description" class="form-control margin-element"
-					rows="5" cols="50"></textarea>
-				<input class="form-control margin-element" type="number" name="price" placeholder="Price">
-				<input class="form-control margin-element" type="file" name="image">
+					rows="5" cols="60"></textarea>
+				<textarea type=" text" name="priceInclude" placeholder="Prices Includes"
+					class="form-control margin-element" rows="7" cols="60"></textarea>
+				<textarea type=" text" name="priceExclude" placeholder="Prices Excludes"
+					class="form-control margin-element" rows="7" cols="60"></textarea>
+				<textarea type=" text" name="priceDemand" placeholder="On Demand Prices"
+					class="form-control margin-element" rows="7" cols="60"></textarea>
+				<h2 class="header_two">Package Options</h2>
+
+				<h4>First Option</h4>
+				<textarea type=" text" name="option1" placeholder="First Option" class="form-control margin-element"
+					rows="3" cols="20"></textarea>
+				<input class="form-control margin-element" type="number" name="price1" placeholder="Option Price 1">
+
+				<h4>Second Option</h4>
+				<textarea type=" text" name="option2" placeholder="Second Option" class="form-control margin-element"
+					rows="3" cols="20"></textarea>
+				<input class="form-control margin-element" type="number" name="price2" placeholder="Option Price 2">
+
+				<h4>Third Option</h4>
+				<textarea type=" text" name="option3" placeholder="Third Option" class="form-control margin-element"
+					rows="3" cols="20"></textarea>
+				<input class="form-control margin-element" type="number" name="price3" placeholder="Option Price 3">
+
+				<h4>Fourth Option</h4>
+				<textarea type=" text" name="option4" placeholder="Fourth Option" class="form-control margin-element"
+					rows="3" cols="20"></textarea>
+				<input class="form-control margin-element" type="number" name="price4" placeholder="Option Price 4">
+
 				<div class="display-flex-column col-md-12">
 					<button class="button" style="width: 100%;">Submit</button>
 				</div>

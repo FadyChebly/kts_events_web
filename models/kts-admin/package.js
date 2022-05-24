@@ -20,9 +20,23 @@ const PackageSchema = new Schema({
 	description: {
 		type: String,
 	},
-	price: {
-		type: Number,
-	}
+	priceInclude: {
+		type: String,
+	},
+	priceExclude: {
+		type: String,
+	},
+	priceDemand: {
+		type: String
+	},
+	packageOption: [{
+		optionDescription: {
+			type: String,
+		},
+		price: {
+			type: Number,
+		}
+	}]
 })
 
 module.exports = mongoose.model('Package', PackageSchema)

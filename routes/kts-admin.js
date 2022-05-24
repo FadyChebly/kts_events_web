@@ -64,7 +64,11 @@ router.route('/event/:id/package')
 		const { id } = req.params
 		let event = await Event.findById(id)
 		const newPackage = req.body
-		let addedPackage = new Package({ title: newPackage.title, description: newPackage.description, price: newPackage.price })
+		let addedPackage = new Package({ title: newPackage.title, description: newPackage.description, price: newPackage.price, priceInclude: newPackage.priceInclude, priceExclude: newPackage.priceExclude, priceDemand: newPackage.priceDemand })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option1, price: newPackage.price1 })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option2, price: newPackage.price2 })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option3, price: newPackage.price3 })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option4, price: newPackage.price4 })
 		let imagedetails = await req.file
 		addedPackage.image_url = imagedetails.path
 		addedPackage.image_filename = imagedetails.filename
@@ -76,19 +80,26 @@ router.route('/event/:id/package')
 	})
 
 
-router.get('/:id/package/:packageId', isLoggedIn, isAdmin, async (req, res) => {
-	const { packageId } = req.params
-	const { id } = req.params
-	let package = await Package.findById(packageId)
-	res.render('Kts-Admin/package', { layout: "./layouts/Admin/event", title: "Edit Package", id, hasPackage: true, package, packageId })
-})
+router.route('/:id/package/:packageId')
 
-router.post('/:id/package/:packageId', isLoggedIn, isAdmin, async (req, res) => {
-	const { packageId } = req.params
-	const { id } = req.params
-	await Package.findByIdAndUpdate({ _id: packageId }, req.body)
-	res.redirect(`/kts-admin/event/${id}`)
-})
+	.get(isLoggedIn, isAdmin, async (req, res) => {
+		const { packageId } = req.params
+		const { id } = req.params
+		let package = await Package.findById(packageId)
+		res.render('Kts-Admin/package', { layout: "./layouts/Admin/event", title: "Edit Package", id, hasPackage: true, package, packageId })
+	})
+	.post(isLoggedIn, isAdmin, async (req, res) => {
+		const { packageId } = req.params
+		const { id } = req.params
+		const newPackage = req.body
+		await Package.findByIdAndUpdate({ _id: packageId }, {
+			title: newPackage.title, description: newPackage.description, price: newPackage.price,
+			priceInclude: newPackage.priceInclude, priceExclude: newPackage.priceExclude, priceDemand: newPackage.priceDemand,
+			packageOption: [{ optionDescription: newPackage.option1, price: newPackage.price1 }, { optionDescription: newPackage.option2, price: newPackage.price2 }, { optionDescription: newPackage.option3, price: newPackage.price3 }, { optionDescription: newPackage.option4, price: newPackage.price4 }]
+		})
+		res.redirect(`/kts-admin/event/${id}`)
+	})
+
 
 router.delete('/delete/package/:packageid/event/:eventId', isLoggedIn, isAdmin, async (req, res) => {
 	const { packageid } = req.params

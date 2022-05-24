@@ -3,21 +3,27 @@
 	<div class="row">
 		<div class="col-md-12">
 			<% for(let package of currentEvent.packages){ %>
-				<div class="card cardHead">
-					<img class="card-img-top" src="<%= package.image_url %> " alt="Card image cap">
-					<div class="card-body">
-						<h5 class="card-title">
-							<%= package.title %>
-						</h5>
-						<p class="card-text">
-							<%= package.description %>
-						</p>
-						<p class="card-text">
-							<a href="" class="btn btn-primary">Price: <%= package.price %> </a>
-						</p>
-					</div>
+				<form action="/invited-individual/payment/<%= eventid %>/<%= package.price %>" method="post">
+					<script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button" data-key="<%= key %>"
+						data-amount="<%= package.price %>00" data-currency="usd" data-name="Package Pricing"
+						data-description="Buy Package for the selected event" data-locale="auto">
+						</script>
+					<div class="card cardHead">
+						<img class="card-img-top" src="<%= package.image_url %> " alt="Card image cap">
+						<div class="card-body">
+							<h5 class="card-title">
+								<%= package.title %>
+							</h5>
+							<p class="card-text">
+								<%= package.description %>
+							</p>
+							<p class="card-text">
+								<button class="btn btn-primary">Price: <%= package.price %> $ </button>
+							</p>
+						</div>
 
-				</div>
+					</div>
+				</form>
 				<% } %>
 		</div>
 	</div>
