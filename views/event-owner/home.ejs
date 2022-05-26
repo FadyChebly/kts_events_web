@@ -12,10 +12,26 @@
 						<p class="card-text">
 							<%= package.description %>
 						</p>
-						<p class="card-text">
-							<a href="" class="btn btn-primary">Price: <%= package.price %> </a>
-						</p>
 					</div>
+
+				</div>
+				<ul class="list-group list-group-flush">
+					<% for(let option of package.packageOption){ %>
+						<% if(option.optionDescription !=='' ){ %>
+							<li class="list-group-item"><textarea type=" text" placeholder="First Option"
+									class="form-control margin-element" rows="5" cols="50"
+									disabled><%= option.optionDescription %> </textarea>
+								<a href="" class="btn btn-primary">Price: <%= option.price %> </a>
+							</li>
+							<% } %>
+								<%} %>
+				</ul>
+				<div class="row">
+					<% let count=0 %>
+						<% for(let option of package.packageOption){%>
+							<% if(option.optionDescription !=='' ) %>
+								<% count++ %>
+									<%} %>
 
 				</div>
 				<% } %>

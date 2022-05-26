@@ -1,5 +1,4 @@
 window.onload = function () {
-
 	const eventOwnerSubmitBtn = document.querySelector('#submitEventOwner')
 	let popup = document.querySelector('#popup1')
 	let closebtn = document.querySelector('#close')
@@ -24,6 +23,15 @@ window.onload = function () {
 	closebtn.addEventListener('click', () => {
 		popup.classList.remove('visible')
 		popup.classList.add('notVisible')
+	})
+
+	$('#myList a').on('click', function (e) {
+		e.preventDefault()
+		$(this).tab('show')
+	})
+	$('a[data-toggle="list"]').on('shown.bs.tab', function (e) {
+		e.target // newly activated tab
+		e.relatedTarget // previous active tab
 	})
 
 }

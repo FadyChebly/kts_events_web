@@ -47,13 +47,29 @@ router.route('/event/:eventid/details')
 		res.redirect(`/Kts-Admin/event/${eventid}`)
 	})
 
-router.get('/event/:id', isLoggedIn, isAdmin, async (req, res) => {
-	const { id } = req.params
-	let event = await Event.findById(id)
-	let Packages = await event.populate('packages')
-	console.log(`${Packages}`)
-	res.render('Kts-Admin/event', { layout: "./layouts/Admin/event", title: "Event", event, id, Packages })
-})
+router.route('/event/:id')
+	.get(isLoggedIn, isAdmin, async (req, res) => {
+		const { id } = req.params
+		let event = await Event.findById(id)
+		let Packages = await event.populate('packages')
+		console.log(`${Packages}`)
+		res.render('Kts-Admin/event', { layout: "./layouts/Admin/event", title: "Event", event, id, Packages })
+	})
+	.delete(isLoggedIn, isAdmin, async (req, res) => {
+		const { id } = req.params
+		const event = await Event.findById(id).populate('packages')
+		for (let package of event.packages) {
+			let deletedPackage = await Package.findById(package._id)
+			await cloudinary.uploader.destroy(deletedPackage.image_filename)
+			await Package.findByIdAndDelete(package._id)
+		}
+		await Event.findByIdAndDelete(id)
+		const AllUsers = await User.find({ eventId: id })
+		for (let user of AllUsers) {
+			await User.findByIdAndDelete(user._id)
+		}
+		res.redirect('/kts-admin/home')
+	})
 
 router.route('/event/:id/package')
 	.get(isLoggedIn, isAdmin, (req, res) => {
@@ -111,19 +127,6 @@ router.delete('/delete/package/:packageid/event/:eventId', isLoggedIn, isAdmin, 
 	res.redirect(`/kts-admin/event/${eventId}`)
 })
 
-router.delete('/delete/event/:eventid', isLoggedIn, isAdmin, async (req, res) => {
-	const { eventid } = req.params
-	const event = await Event.findById(eventid).populate('packages')
-	for (let package of event.packages) {
-		await Package.findByIdAndDelete(package._id)
-	}
-	await Event.findByIdAndDelete(eventid)
-	const AllUsers = await User.find({ eventId: eventid })
-	for (let user of AllUsers) {
-		await User.findByIdAndDelete(user._id)
-	}
-	res.redirect('/kts-admin/home')
-})
 
 router.post('/SaveEvent/:eventid', isLoggedIn, isAdmin, async (req, res) => {
 	const { eventid } = req.params
