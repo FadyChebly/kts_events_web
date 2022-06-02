@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/kts-admin/user');
-const { newsLetterSubscribe } = require('../middleware/emailHandler')
+const { newsLetterSubscribe, contactUsRequest } = require('../middleware/emailHandler')
 
 
 router.route('/')
@@ -18,26 +18,13 @@ router.get('/about', (req, res) => {
 	res.render('Landing-Pages/about', { title: "About" })
 })
 
-router.get('/contact', (req, res) => {
-	res.render('Landing-Pages/contact', { title: "Contact Us" })
-})
-
-router.post('/register', catchAsync(async (req, res, next) => {
-	try {
-		const { username, password, isAdmin } = req.body;
-		const user = new User({ username, isAdmin });
-		const registeredUser = await User.register(user, password);
-		req.login(registeredUser, err => {
-			if (err) return next(err);
-			req.flash('success', 'Welcome!');
-			res.redirect('/login');
-			console.log(registeredUser)
-		})
-	} catch (e) {
-		req.flash('error', e.message);
-		res.redirect('/login');
-	}
-}));
+router.route('/contact')
+	.get((req, res) => {
+		res.render('Landing-Pages/contact', { title: "Contact Us" })
+	})
+	.post((req, res) => {
+		contactUsRequest(req, res)
+	})
 
 router.route('/login')
 	.get((req, res) => {
@@ -70,5 +57,22 @@ router.post('/logout', (req, res) => {
 	req.flash('success', "Goodbye!");
 	res.redirect('/login');
 })
+
+router.post('/register', catchAsync(async (req, res, next) => {
+	try {
+		const { username, password, isAdmin } = req.body;
+		const user = new User({ username, isAdmin });
+		const registeredUser = await User.register(user, password);
+		req.login(registeredUser, err => {
+			if (err) return next(err);
+			req.flash('success', 'Welcome!');
+			res.redirect('/login');
+			console.log(registeredUser)
+		})
+	} catch (e) {
+		req.flash('error', e.message);
+		res.redirect('/login');
+	}
+}));
 
 module.exports = router;

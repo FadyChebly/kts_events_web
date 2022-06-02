@@ -2,9 +2,10 @@
 	<h2 class="header_two">Insert Event Owner Account</h2>
 	<div class="row">
 		<div class="col-md-6 center-element">
-			<form class="form-group" action="/kts-admin/event" method="post">
-				<input type="email" class="form-control margin-element" name="username" id="eventOwnerEmail" required
-					placeholder="Email" />
+			<form class="form-group" action="/kts-admin/new-event" method="post">
+				<input type="text" class="form-control margin-element" name="username" required
+					placeholder="Group Name" />
+				<input type="text" class="form-control margin-element" name="password" placeholder="Password" required>
 				<div class="col-md-12 display-flex-column">
 					<button class="button" id="submitEventOwner">Submit</button>
 					<a href="/kts-admin/home" class="button">Back</a>
@@ -14,9 +15,10 @@
 	</div>
 </div>
 
+<!-- 
 <div class="alert alert-danger alert-dismissible fade show alertDiv notVisible" id="popup1" role="alert">
 	<strong>ERROR!</strong> You should provide a valid email address.
 	<button type="button" id="close" class="close" aria-label="Close">
 		<span aria-hidden="true">&times;</span>
 	</button>
-</div>
+</div> -->

@@ -6,7 +6,6 @@ const upload = multer({ storage })
 const Package = require('../models/kts-admin/package')
 const Event = require('../models/kts-admin/event')
 const { isLoggedIn, isAdmin } = require('../middleware/loggedIn')
-const { eventOwnerEmail } = require('../middleware/emailHandler')
 const User = require('../models/kts-admin/user')
 
 router.get('/home', isLoggedIn, isAdmin, async (req, res) => {
@@ -14,25 +13,36 @@ router.get('/home', isLoggedIn, isAdmin, async (req, res) => {
 	res.render('Kts-Admin/home', { events, layout: "./layouts/admin-layout", title: "Admin - Home" })
 })
 
-router.get('/new-event', isLoggedIn, isAdmin, (req, res) => {
-	res.render('Kts-Admin/event-owner', { layout: "./layouts/Admin/event", title: "Admin - New Event" })
-})
-
-router.post('/event', isLoggedIn, isAdmin, async (req, res) => {
-	const { username } = req.body
-	const foundUser = await User.findOne({ username: `${username}` })
-	if (foundUser) {
-		req.flash('error', `${username} is already an event owner to an already existing event`)
-		res.redirect('/kts-admin/new-event')
-	}
-	else {
-		const newEvent = new Event({ owner: `${username}` })
-		await newEvent.save().then(res => { console.log(`success to post event owner`) }).catch(err => { console.log(err) })
-		const id = newEvent._id.toString()
-		await eventOwnerEmail(req, res, username, id)
-		res.redirect(`/kts-admin/event/${id}/details`)
-	}
-})
+router.route('/new-event')
+	.get(isLoggedIn, isAdmin, (req, res) => {
+		res.render('Kts-Admin/event-owner', { layout: "./layouts/Admin/event", title: "Admin - New Event" })
+	})
+	.post(isLoggedIn, isAdmin, async (req, res) => {
+		const { username, password } = req.body
+		const foundUser = await User.findOne({ username: `${username}` })
+		if (foundUser) {
+			req.flash('error', `${username} is already an event owner to an already existing event`)
+			res.redirect('/kts-admin/new-event')
+		}
+		else {
+			const newEvent = new Event({ owner: `${username}` })
+			await newEvent.save().then(res => { console.log(`success to post event owner`) }).catch(err => { console.log(err) })
+			const eventId = newEvent._id.toString()
+			// await eventOwnerEmail(req, res, username, password, id)
+			try {
+				const isAdmin = 1
+				const newUser = new User({ username, isAdmin, eventId })
+				const registeredUser = await User.register(newUser, password)
+				if (registeredUser) {
+					req.flash('success', 'You have successfully registered the event owner')
+				}
+				res.redirect(`/kts-admin/event/${eventId}/details`)
+			} catch (error) {
+				req.flash('error', error.message)
+				res.redirect('/kts-admin/new-event');
+			}
+		}
+	})
 
 router.route('/event/:eventid/details')
 	.get(isLoggedIn, isAdmin, (req, res) => {
@@ -97,7 +107,6 @@ router.route('/event/:id/package')
 
 
 router.route('/:id/package/:packageId')
-
 	.get(isLoggedIn, isAdmin, async (req, res) => {
 		const { packageId } = req.params
 		const { id } = req.params
@@ -126,7 +135,6 @@ router.delete('/delete/package/:packageid/event/:eventId', isLoggedIn, isAdmin, 
 	await Event.findById(eventId)
 	res.redirect(`/kts-admin/event/${eventId}`)
 })
-
 
 router.post('/SaveEvent/:eventid', isLoggedIn, isAdmin, async (req, res) => {
 	const { eventid } = req.params

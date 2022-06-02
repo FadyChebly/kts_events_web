@@ -15,7 +15,7 @@ const User = require('./models/kts-admin/user')
 const methodOverride = require("method-override");
 const expressLayouts = require('express-ejs-layouts')
 const nodemailer = require('nodemailer')
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 
 const MongoDBStore = require("connect-mongo")(session);
@@ -24,7 +24,7 @@ const MongoDBStore = require("connect-mongo")(session);
 const adminRoute = require('./routes/kts-admin')
 const userRoutes = require('./routes/users');
 const eventOwner = require('./routes/event-owner')
-const invitedIndividual = require('./routes/invited-individual')
+// const invitedIndividual = require('./routes/invited-individual')
 
 //db connection
 mongoose.connect(process.env.CONNECTION_STRING, {
@@ -144,34 +144,7 @@ app.use((req, res, next) => {
 app.use('/', userRoutes);
 app.use('/kts-admin', adminRoute)
 app.use('/event-owner', eventOwner)
-app.use('/invited-individual', invitedIndividual)
-
-
-app.post('/contact', (req, res) => {
-	let transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: process.env.EMAIL,
-			pass: process.env.PASSWORD
-		}
-	});
-	var mailOptions = {
-		from: req.body.name + '&lt;' + process.env.EMAIL + '&gt;',
-		to: 'codebookinc@gmail.com, fady.chebly1@gmail.com',
-		subject: 'Message from the Contact Us',
-		text: req.body.feedback
-	};
-	transporter.sendMail(mailOptions, (err, res) => {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			console.log('success')
-		}
-	});
-	res.redirect('contact')
-})
-
+// app.use('/invited-individual', invitedIndividual)
 
 app.all('*', (req, res, next) => {
 	next(new ExpressError('Page Not Found', 404))

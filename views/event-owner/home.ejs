@@ -16,28 +16,25 @@
 
 				</div>
 				<ul class="list-group list-group-flush">
-					<% for(let option of package.packageOption){ %>
-						<% if(option.optionDescription !=='' ){ %>
-							<li class="list-group-item"><textarea type=" text" placeholder="First Option"
-									class="form-control margin-element" rows="5" cols="50"
-									disabled><%= option.optionDescription %> </textarea>
-								<a href="" class="btn btn-primary">Price: <%= option.price %> </a>
-							</li>
-							<% } %>
-								<%} %>
+					<% let counter=1 %>
+						<% for(let option of package.packageOption){ %>
+							<% if(option.optionDescription !=='' ){ %>
+								<li class="list-group-item">
+									<h4>Option #<%= counter %>
+									</h4>
+									<textarea type=" text" placeholder="First Option"
+										class="form-control margin-element" rows="5" cols="50"
+										disabled><%= option.optionDescription %> </textarea>
+									<a href="" class="btn btn-primary">Price: <%= option.price %> $</a>
+								</li>
+								<% counter++ %>
+									<% } %>
+										<%} %>
 				</ul>
-				<div class="row">
-					<% let count=0 %>
-						<% for(let option of package.packageOption){%>
-							<% if(option.optionDescription !=='' ) %>
-								<% count++ %>
-									<%} %>
-
-				</div>
 				<% } %>
 		</div>
 	</div>
-	<h2 class="header_two">Insert Invitees Emails List</h2>
+	<!-- <h2 class="header_two">Insert Invitees Emails List</h2>
 	<div class="row">
 		<div class="col-md-12 center-element">
 			<form class="form-group" enctype="multipart/form-data" action="/event-owner/home/<%= eventid  %> "
@@ -46,5 +43,5 @@
 				<input type="submit" class="btn btn-primary">
 			</form>
 		</div>
-	</div>
+	</div> -->
 </div>
