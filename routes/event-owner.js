@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express');
 const router = express.Router();
-const User = require('../models/kts-admin/user');
+// const User = require('../models/kts-admin/user');
 const Event = require('../models/kts-admin/event')
+const Package = require('../models/kts-admin/package')
 const { isLoggedIn, isEventOwner } = require('../middleware/loggedIn')
 // const multer = require('multer')
 // const fs = require('fs')
@@ -35,12 +37,6 @@ require('dotenv').config()
 // 	fileFilter: multerFilter,
 // });
 
-router.route('/home/:eventid')
-	.get(isLoggedIn, isEventOwner, async (req, res) => {
-		const { eventid } = req.params
-		const currentEvent = await Event.findById(eventid).populate('packages')
-		res.render('event-owner/home', { layout: "./layouts/Admin/event", title: "event owner", eventid, currentEvent })
-	})
 // .post(isLoggedIn, isEventOwner, upload.single('myFile'), async (req, res) => {
 // 	const { eventid } = req.params
 // 	const directory = __dirname.slice(0, __dirname.length - 6) + 'public/myFile.csv'
@@ -117,6 +113,21 @@ router.route('/home/:eventid')
 // 	}
 
 // })
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+
+router.route('/home/:eventid')
+	.get(isLoggedIn, isEventOwner, async (req, res) => {
+		const { eventid } = req.params
+		const currentEvent = await Event.findById(eventid).populate('packages')
+		res.render('event-owner/home', { layout: "./layouts/Admin/event", title: "event owner", eventid, currentEvent })
+	})
+
+router.route('/:packageId/:optionNum')
+	.get(isLoggedIn, isEventOwner, async (req, res) => {
+		const { packageId, optionNum } = req.params
+
+	})
+
 
 
 module.exports = router;

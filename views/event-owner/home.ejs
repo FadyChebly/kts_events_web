@@ -25,7 +25,8 @@
 									<textarea type=" text" placeholder="First Option"
 										class="form-control margin-element" rows="5" cols="50"
 										disabled><%= option.optionDescription %> </textarea>
-									<a href="" class="btn btn-primary">Price: <%= option.price %> $</a>
+									<a href="/event-owner/<%= package._id.toString() %>/<%=counter%>"
+										class="btn btn-primary">Price: <%= option.price %> $</a>
 								</li>
 								<% counter++ %>
 									<% } %>
