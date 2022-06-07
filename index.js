@@ -14,7 +14,6 @@ const ExpressError = require('./utils/ExpressError');
 const User = require('./models/kts-admin/user')
 const methodOverride = require("method-override");
 const expressLayouts = require('express-ejs-layouts')
-const nodemailer = require('nodemailer')
 // const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 

@@ -25,8 +25,16 @@
 									<textarea type=" text" placeholder="First Option"
 										class="form-control margin-element" rows="5" cols="50"
 										disabled><%= option.optionDescription %> </textarea>
-									<a href="/event-owner/<%= package._id.toString() %>/<%=counter%>"
-										class="btn btn-primary">Price: <%= option.price %> $</a>
+									<form class="form-group"
+										action="/event-owner/<%= eventid %>/<%= package._id.toString() %>/<%=counter%>"
+										method="POST">
+										<script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button"
+											data-key="<%= key %>" data-amount="<%= option.price %>00"
+											data-currency="usd" data-name="Package Pricing"
+											data-description="Buy Package for the selected event" data-locale="auto">
+											</script>
+										<button class="btn btn-primary" id="price">Price: <%= option.price %> </button>
+									</form>
 								</li>
 								<% counter++ %>
 									<% } %>
