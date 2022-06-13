@@ -142,22 +142,30 @@ router.route('/:eventid/:packageId/:optionNum')
 			// 	country: 'India',
 			// }
 		}).then((customer) => {
-			console.log('fady ya hmar wsolna la hone')
 			return stripe.charges.create({
 				amount: optionPrice,	 // Charing Rs 25 
 				description: `Dear Client\n\nYou have successfully paid and reserved the package:\n${currentPackage.title}\nYou have chosen the following option:\n${currentPackageOption.optionDescription}\n\n If any issues occures do not hesitate, and contact us!\n\n KTS support team.`,
-				currency: 'USD',
-				customer: customer.id
+				currency: 'eur',
+				customer: customer.id,
+				receipt_email: req.body.stripeEmail
 			});
 		}).then((charge) => {
 			console.log('fady wsolna 3al charge')
 			console.log(charge)
 			req.flash("success", "Payment sent Successfully");
 			res.redirect(`/event-owner/home/${eventid}`); // If no error occurs 
-			console.log('ayre bel success')
+		}).then(async (receipt) => {
+			await stripe.paymentIntents.create({
+				amount: optionPrice,
+				currency: 'eur',
+				payment_method_types: ['card'],
+				receipt_email: req.body.stripeEmail,
+				description: `Dear Client\n\nYou have successfully paid and reserved the package:\n${currentPackage.title}\nYou have chosen the following option:\n${currentPackageOption.optionDescription}\n\n If any issues occures do not hesitate, and contact us!\n\n KTS support team.`,
+			});
 		})
 			.catch((err) => {
-				res.send(err);	 // If some error occurs 
+				req.flash("error", "Payment error");
+				res.redirect(`/event-owner/home/${eventid}`); // If no error occurs 
 			});
 
 	})

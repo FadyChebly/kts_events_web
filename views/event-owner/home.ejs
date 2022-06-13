@@ -22,19 +22,31 @@
 								<li class="list-group-item">
 									<h4>Option #<%= counter %>
 									</h4>
-									<textarea type=" text" placeholder="First Option"
-										class="form-control margin-element" rows="5" cols="50"
-										disabled><%= option.optionDescription %> </textarea>
-									<form class="form-group"
-										action="/event-owner/<%= eventid %>/<%= package._id.toString() %>/<%=counter%>"
-										method="POST">
-										<script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button"
-											data-key="<%= key %>" data-amount="<%= option.price %>00"
-											data-currency="usd" data-name="Package Pricing"
-											data-description="Buy Package for the selected event" data-locale="auto">
-											</script>
-										<button class="btn btn-primary" id="price">Price: <%= option.price %> </button>
-									</form>
+									<div style="display: flex;
+									flex-direction: row;
+									flex-wrap: nowrap;
+									align-content: center;
+									justify-content: center;
+									align-items: center;">
+										<textarea type=" text" placeholder="First Option"
+											class="form-control margin-element" rows="5" cols="50"
+											disabled><%= option.optionDescription %> </textarea>
+										<form class="form-group"
+											action="/event-owner/<%= eventid %>/<%= package._id.toString() %>/<%=counter%>"
+											method="POST">
+											<label>
+												<%= option.price %> $
+											</label>
+											<script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button"
+												data-key="<%= key %>" data-amount="<%= option.price %>00"
+												data-currency="eur" data-name="Package Pricing"
+												data-description="Buy Package for the selected event"
+												data-locale="auto">
+												</script>
+											<!-- <button class="btn btn-primary" id="price">Price: <%= option.price %>
+											</button> -->
+										</form>
+									</div>
 								</li>
 								<% counter++ %>
 									<% } %>
