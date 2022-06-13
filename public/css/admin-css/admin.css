@@ -50,3 +50,43 @@ table {
 .margin-element {
 	margin: 2em 0;
 }
+
+.option-card {
+	background: rgba(0, 0, 0, 0.5) !important;
+	border-radius: 30px !important;
+	color: white !important;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+.option-card h4 {
+	color: white;
+}
+
+
+.options-list {
+	display: flex !important;
+	flex-direction: inherit !important;
+	color: white !important;
+}
+
+.option-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-content: center;
+	justify-content: center;
+	align-items: center;
+}
+
+.option-container textarea {
+	background-color: rgb(0, 0, 0, .3) !important;
+	color: white !important;
+}
+
+.cardHead {
+	border-radius: 50px !important;
+	background: rgb(255, 255, 255, 0.5) !important;
+	color: white;
+}

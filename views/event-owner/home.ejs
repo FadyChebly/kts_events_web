@@ -15,19 +15,40 @@
 					</div>
 
 				</div>
-				<ul class="list-group list-group-flush">
+				<ul class="list-group list-group-flush options-list">
+					<li class="list-group-item option-card">
+						<h4>Price Includes
+						</h4>
+						<div class="option-container">
+							<textarea type=" text" placeholder="First Option" class="form-control margin-element"
+								rows="5" cols="50" disabled><%= package.priceInclude%> </textarea>
+						</div>
+					</li>
+					<li class="list-group-item option-card">
+						<h4>Price Exclude
+						</h4>
+						<div class="option-container">
+							<textarea type=" text" placeholder="First Option" class="form-control margin-element"
+								rows="5" cols="50" disabled><%= package.priceExclude%> </textarea>
+						</div>
+					</li>
+					<li class="list-group-item option-card">
+						<h4>Price On Demand
+						</h4>
+						<div class="option-container">
+							<textarea type=" text" placeholder="First Option" class="form-control margin-element"
+								rows="5" cols="50" disabled><%= package.priceDemand%> </textarea>
+						</div>
+					</li>
+				</ul>
+				<ul class="list-group list-group-flush options-list">
 					<% let counter=1 %>
 						<% for(let option of package.packageOption){ %>
 							<% if(option.optionDescription !=='' ){ %>
-								<li class="list-group-item">
+								<li class="list-group-item option-card">
 									<h4>Option #<%= counter %>
 									</h4>
-									<div style="display: flex;
-									flex-direction: row;
-									flex-wrap: nowrap;
-									align-content: center;
-									justify-content: center;
-									align-items: center;">
+									<div class="option-container">
 										<textarea type=" text" placeholder="First Option"
 											class="form-control margin-element" rows="5" cols="50"
 											disabled><%= option.optionDescription %> </textarea>
@@ -35,8 +56,8 @@
 											action="/event-owner/<%= eventid %>/<%= package._id.toString() %>/<%=counter%>"
 											method="POST">
 											<label>
-												<%= option.price %> $
-											</label>
+												Price: <%= option.price %> €
+											</label> <br>
 											<script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button"
 												data-key="<%= key %>" data-amount="<%= option.price %>00"
 												data-currency="eur" data-name="Package Pricing"
