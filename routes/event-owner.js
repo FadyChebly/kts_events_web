@@ -134,13 +134,6 @@ router.route('/:eventid/:packageId/:optionNum')
 			email: req.body.stripeEmail,
 			source: req.body.stripeToken,
 			name: 'Package Pricing',
-			// address: {
-			// 	line1: 'TC 9/4 Old MES colony',
-			// 	postal_code: '110092',
-			// 	city: 'New Delhi',
-			// 	state: 'Delhi',
-			// 	country: 'India',
-			// }
 		}).then((customer) => {
 			return stripe.charges.create({
 				amount: optionPrice,	 // Charing Rs 25 
