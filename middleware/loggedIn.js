@@ -24,13 +24,3 @@ module.exports.isEventOwner = async (req, res, next) => {
 	}
 	next();
 }
-
-module.exports.isInvited = async (req, res, next) => {
-	const { isAdmin } = req.user;
-	if (isAdmin !== 0) {
-		req.flash('error', 'You do not have permission to access the invited individual!');
-		return res.redirect(`/login`);
-	}
-	next();
-}
-

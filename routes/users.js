@@ -10,8 +10,8 @@ router.route('/')
 	.get((req, res) => {
 		res.render('Landing-Pages/home', { title: "KTS" })
 	})
-	.post((req, res) => {
-		newsLetterSubscribe(req, res)
+	.post(async (req, res) => {
+		await newsLetterSubscribe(req, res)
 	})
 
 router.get('/about', (req, res) => {
@@ -22,8 +22,8 @@ router.route('/contact')
 	.get((req, res) => {
 		res.render('Landing-Pages/contact', { title: "Contact Us" })
 	})
-	.post((req, res) => {
-		contactUsRequest(req, res)
+	.post(async (req, res) => {
+		await contactUsRequest(req, res)
 	})
 
 router.route('/login')

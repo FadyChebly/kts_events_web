@@ -14,7 +14,6 @@ const ExpressError = require('./utils/ExpressError');
 const User = require('./models/kts-admin/user')
 const methodOverride = require("method-override");
 const expressLayouts = require('express-ejs-layouts')
-// const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 
 const MongoDBStore = require("connect-mongo")(session);
@@ -23,7 +22,6 @@ const MongoDBStore = require("connect-mongo")(session);
 const adminRoute = require('./routes/kts-admin')
 const userRoutes = require('./routes/users');
 const eventOwner = require('./routes/event-owner')
-// const invitedIndividual = require('./routes/invited-individual')
 
 //db connection
 mongoose.connect(process.env.CONNECTION_STRING, {
@@ -75,55 +73,8 @@ const sessionConfig = {
 	}
 }
 
-// const scriptSrcUrls = [
-//     "https://stackpath.bootstrapcdn.com/",
-//     "https://api.tiles.mapbox.com/",
-//     "https://api.mapbox.com/",
-//     "https://kit.fontawesome.com/",
-//     "https://cdnjs.cloudflare.com/",
-//     "https://cdn.jsdelivr.net",
-// ];
-// const styleSrcUrls = [
-//     "https://kit-free.fontawesome.com/",
-//     "https://stackpath.bootstrapcdn.com/",
-//     "https://api.mapbox.com/",
-//     "https://api.tiles.mapbox.com/",
-//     "https://fonts.googleapis.com/",
-//     "https://use.fontawesome.com/",
-// ];
-// const connectSrcUrls = [
-//     "https://api.mapbox.com/",
-//     "https://a.tiles.mapbox.com/",
-//     "https://b.tiles.mapbox.com/",
-//     "https://events.mapbox.com/",
-// ];
-// const fontSrcUrls = [];
-// app.use(
-//     helmet.contentSecurityPolicy({
-//         directives: {
-//             defaultSrc: [],
-//             connectSrc: ["'self'", ...connectSrcUrls],
-//             scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
-//             styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
-//             workerSrc: ["'self'", "blob:"],
-//             objectSrc: [],
-//             imgSrc: [
-//                 "'self'",
-//                 "blob:",
-//                 "data:",
-//                 "https://res.cloudinary.com/douqbebwk/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
-//                 "https://images.unsplash.com/",
-//             ],
-//             fontSrc: ["'self'", ...fontSrcUrls],
-//         },
-//     })
-// );
-
-//test
-
 app.use(session(sessionConfig))
 app.use(flash());
-// app.use(helmet());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -133,7 +84,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-	// console.log(req.session)
 	res.locals.currentUser = req.user;
 	res.locals.success = req.flash('success');
 	res.locals.error = req.flash('error');
@@ -143,7 +93,6 @@ app.use((req, res, next) => {
 app.use('/', userRoutes);
 app.use('/kts-admin', adminRoute)
 app.use('/event-owner', eventOwner)
-// app.use('/invited-individual', invitedIndividual)
 
 app.all('*', (req, res, next) => {
 	next(new ExpressError('Page Not Found', 404))

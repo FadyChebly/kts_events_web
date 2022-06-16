@@ -1,108 +1,28 @@
 require('dotenv').config()
 const nodemailer = require('nodemailer')
-const { generateRandomPass } = require('./reusable')
-const User = require('../models/kts-admin/user')
-const fs = require('fs')
-const csv = require('csv-parser')
-
-//General config for email
-let transporter = nodemailer.createTransport({
-	service: 'gmail',
-	auth: {
-		user: process.env.EMAIL,
-		pass: process.env.PASSWORD
-	}
-});
-
-// module.exports.eventOwnerEmail = async (req, res, username, eventId) => {
-// 	let grantedPassword = generateRandomPass
-// 	let transporter = nodemailer.createTransport({
-// 		service: 'gmail',
-// 		auth: {
-// 			user: process.env.EMAIL,
-// 			pass: process.env.PASSWORD
-// 		}
-// 	});
+const { google } = require('googleapis')
+CLIENT_ID = "796793058386-5mfl2b7gqj6r298boo6ekrva2rp649kr.apps.googleusercontent.com"
+CLIENT_SECRET = "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"
+REDIRECT_URI = "https://developers.google.com/oauthplayground"
+REFRESH_TOKEN = "1//04NGUApxn_4YsCgYIARAAGAQSNwF-L9IrJvmZcZLwsbft27N1xhut8aRDXQTDHR6T8Nxd_hVYZdGLKZ1iai3T8kuK3TDM4uC40WQ"
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN })
 
 
-// 	let mailOptions = {
-// 		from: process.env.EMAIL,
-// 		to: username.toString(),
-// 		subject: 'Event Owner Password Grant',
-// 		text: 'Dear Client ' + username.toString() + ', your granted password is: ' + grantedPassword
-// 	};
-// 	try {
-// 		const isAdmin = 1
-// 		const newUser = new User({ username, isAdmin, eventId })
-// 		const registeredUser = await User.register(newUser, grantedPassword)
-// 		if (registeredUser) {
-// 			req.flash('success', 'You have successfully registered the event owner')
-// 			transporter.sendMail(mailOptions, (err, res) => {
-// 				if (err) {
-// 					console.log(err)
-// 				}
-// 				else {
-// 					console.log('success')
-// 				}
-// 			})
-// 		}
-// 	} catch (error) {
-// 		req.flash('error', error.message)
-// 		res.redirect('/kts-admin/new-event');
+module.exports.newsLetterSubscribe = async (req, res) => {
+	const accessToken = await oAuth2Client.getAccessToken()
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			type: 'OAuth2',
+			user: process.env.EMAIL,
+			clientId: CLIENT_ID,
+			clientSecret: CLIENT_SECRET,
+			refreshToken: REFRESH_TOKEN,
+			accessToken: accessToken
+		}
+	});
 
-// 	}
-
-// }
-
-// module.exports.invitedIndividualEmail = async (req, res, eventId) => {
-// 	let emails = []
-// 	let transporter = nodemailer.createTransport({
-// 		service: 'gmail',
-// 		auth: {
-// 			user: process.env.EMAIL,
-// 			pass: process.env.PASSWORD
-// 		}
-// 	});
-
-// 	fs.createReadStream('../routes/myFile.csv')
-// 		.pipe(csv()).on('data', (row) => emails.push(row.Emails))
-// 		.on('error', (err) => console.log("ERROR"))
-// 		.on('end', async () => {
-// 			for (let i = 0; i < emails.length; i++) {
-// 				try {
-// 					let grantedPassword = generateRandomPass
-// 					let mailOptions = {
-// 						from: process.env.EMAIL,
-// 						to: username.toString(),
-// 						subject: 'Event Owner Password Grant',
-// 						text: 'Dear Client ' + username.toString() + ', your granted password is: ' + grantedPassword
-// 					};
-// 					let username = emails[i]
-// 					const isAdmin = 0
-// 					let newUser = new User({ username, isAdmin, eventId })
-// 					let registeredUser = await User.register(newUser, grantedPassword)
-// 					if (registeredUser) {
-// 						req.flash('success', 'You have successfully registered the invited individual')
-// 						transporter.sendMail(mailOptions, (err, res) => {
-// 							if (err) {
-// 								console.log(err)
-// 							}
-// 							else {
-// 								console.log('success')
-// 							}
-// 						})
-// 					}
-// 				} catch (error) {
-// 					req.flash('error', error.message)
-// 					res.redirect('/event-owner/home');
-
-// 				}
-// 			}
-// 		})
-
-// }
-
-module.exports.newsLetterSubscribe = (req, res) => {
 	var mailOptions = {
 		from: 'KTS event website',
 		to: process.env.EMAIL,
@@ -136,7 +56,20 @@ module.exports.newsLetterSubscribe = (req, res) => {
 	res.redirect('/')
 }
 
-module.exports.contactUsRequest = (req, res) => {
+module.exports.contactUsRequest = async (req, res) => {
+
+	const accessToken = await oAuth2Client.getAccessToken()
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			type: 'OAuth2',
+			user: process.env.EMAIL,
+			clientId: CLIENT_ID,
+			clientSecret: CLIENT_SECRET,
+			refreshToken: REFRESH_TOKEN,
+			accessToken: accessToken
+		}
+	});
 
 	var mailOptions = {
 		from: 'KTS event website',
