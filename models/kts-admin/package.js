@@ -35,6 +35,10 @@ const PackageSchema = new Schema({
 		},
 		price: {
 			type: Number,
+		},
+		availableQuantity: {
+			type: Number,
+			default: 0
 		}
 	}]
 })

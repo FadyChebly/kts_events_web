@@ -17,24 +17,32 @@
 				rows="3" cols="20"><%= package.packageOption[0].optionDescription %> </textarea>
 			<input class="form-control margin-element" type="number" name="price1" placeholder="Option Price 1"
 				value="<%= package.packageOption[0].price %>">
+			<input class="form-control margin-element" type="number" name="availability1"
+				placeholder="Available Quantity" min="0" value="<%= package.packageOption[0].availableQuantity %>">
 
 			<h4>Second Option</h4>
 			<textarea type=" text" name="option2" placeholder="Second Option" class="form-control margin-element"
 				rows="3" cols="20"><%= package.packageOption[1].optionDescription %></textarea>
 			<input class="form-control margin-element" type="number" name="price2" placeholder="Option Price 2"
 				value="<%= package.packageOption[1].price %>">
+			<input class="form-control margin-element" type="number" name="availability2"
+				placeholder="Available Quantity" min="0" value="<%= package.packageOption[1].availableQuantity %>">
 
 			<h4>Third Option</h4>
 			<textarea type=" text" name="option3" placeholder="Third Option" class="form-control margin-element"
 				rows="3" cols="20"><%= package.packageOption[2].optionDescription %></textarea>
 			<input class="form-control margin-element" type="number" name="price3" placeholder="Option Price 3"
 				value="<%= package.packageOption[2].price %>">
+			<input class="form-control margin-element" type="number" name="availability3"
+				placeholder="Available Quantity" min="0" value="<%= package.packageOption[2].availableQuantity %>">
 
 			<h4>Fourth Option</h4>
 			<textarea type=" text" name="option4" placeholder="Fourth Option" class="form-control margin-element"
 				rows="3" cols="20"><%= package.packageOption[3].optionDescription %></textarea>
 			<input class="form-control margin-element" type="number" name="price4" placeholder="Option Price 4"
 				value="<%= package.packageOption[3].price %>">
+			<input class="form-control margin-element" type="number" name="availability4"
+				placeholder="Available Quantity" min="0" value="<%= package.packageOption[3].availableQuantity %>">
 
 			<button class="button" style="width: 100%;">Submit</button>
 		</form>
@@ -60,21 +68,29 @@
 				<textarea type=" text" name="option1" placeholder="First Option" class="form-control margin-element"
 					rows="3" cols="20"></textarea>
 				<input class="form-control margin-element" type="number" name="price1" placeholder="Option Price 1">
+				<input class="form-control margin-element" type="number" name="availability1"
+					placeholder="Available Quantity" min="0">
 
 				<h4>Second Option</h4>
 				<textarea type=" text" name="option2" placeholder="Second Option" class="form-control margin-element"
 					rows="3" cols="20"></textarea>
 				<input class="form-control margin-element" type="number" name="price2" placeholder="Option Price 2">
+				<input class="form-control margin-element" type="number" name="availability2"
+					placeholder="Available Quantity" min="0">
 
 				<h4>Third Option</h4>
 				<textarea type=" text" name="option3" placeholder="Third Option" class="form-control margin-element"
 					rows="3" cols="20"></textarea>
 				<input class="form-control margin-element" type="number" name="price3" placeholder="Option Price 3">
+				<input class="form-control margin-element" type="number" name="availability3"
+					placeholder="Available Quantity" min="0">
 
 				<h4>Fourth Option</h4>
 				<textarea type=" text" name="option4" placeholder="Fourth Option" class="form-control margin-element"
 					rows="3" cols="20"></textarea>
 				<input class="form-control margin-element" type="number" name="price4" placeholder="Option Price 4">
+				<input class="form-control margin-element" type="number" name="availability4"
+					placeholder="Available Quantity" min="0">
 
 				<div class="display-flex-column col-md-12">
 					<button class="button" style="width: 100%;">Submit</button>

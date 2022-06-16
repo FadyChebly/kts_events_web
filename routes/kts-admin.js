@@ -91,10 +91,10 @@ router.route('/event/:id/package')
 		let event = await Event.findById(id)
 		const newPackage = req.body
 		let addedPackage = new Package({ title: newPackage.title, description: newPackage.description, price: newPackage.price, priceInclude: newPackage.priceInclude, priceExclude: newPackage.priceExclude, priceDemand: newPackage.priceDemand })
-		addedPackage.packageOption.push({ optionDescription: newPackage.option1, price: newPackage.price1 })
-		addedPackage.packageOption.push({ optionDescription: newPackage.option2, price: newPackage.price2 })
-		addedPackage.packageOption.push({ optionDescription: newPackage.option3, price: newPackage.price3 })
-		addedPackage.packageOption.push({ optionDescription: newPackage.option4, price: newPackage.price4 })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option1, price: newPackage.price1, availableQuantity: newPackage.availability1 })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option2, price: newPackage.price2, availableQuantity: newPackage.availability2 })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option3, price: newPackage.price3, availableQuantity: newPackage.availability3 })
+		addedPackage.packageOption.push({ optionDescription: newPackage.option4, price: newPackage.price4, availableQuantity: newPackage.availability4 })
 		let imagedetails = await req.file
 		addedPackage.image_url = imagedetails.path
 		addedPackage.image_filename = imagedetails.filename
@@ -120,7 +120,7 @@ router.route('/:id/package/:packageId')
 		await Package.findByIdAndUpdate({ _id: packageId }, {
 			title: newPackage.title, description: newPackage.description, price: newPackage.price,
 			priceInclude: newPackage.priceInclude, priceExclude: newPackage.priceExclude, priceDemand: newPackage.priceDemand,
-			packageOption: [{ optionDescription: newPackage.option1, price: newPackage.price1 }, { optionDescription: newPackage.option2, price: newPackage.price2 }, { optionDescription: newPackage.option3, price: newPackage.price3 }, { optionDescription: newPackage.option4, price: newPackage.price4 }]
+			packageOption: [{ optionDescription: newPackage.option1, price: newPackage.price1, availableQuantity: newPackage.availability1 }, { optionDescription: newPackage.option2, price: newPackage.price2, availableQuantity: newPackage.availability2 }, { optionDescription: newPackage.option3, price: newPackage.price3, availableQuantity: newPackage.availability3 }, { optionDescription: newPackage.option4, price: newPackage.price4, availableQuantity: newPackage.availability4 }]
 		})
 		res.redirect(`/kts-admin/event/${id}`)
 	})

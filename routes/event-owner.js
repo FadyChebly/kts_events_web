@@ -22,6 +22,7 @@ router.route('/:eventid/:packageId/:optionNum')
 		const currentPackage = await Package.findById(packageId)
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
 		const optionPrice = currentPackageOption.price * 100
+		let availableQuantity = currentPackageOption.availableQuantity
 
 		stripe.customers.create({
 			email: req.body.stripeEmail,
@@ -35,9 +36,9 @@ router.route('/:eventid/:packageId/:optionNum')
 				customer: customer.id,
 				receipt_email: req.body.stripeEmail
 			});
-		}).then((charge) => {
-			console.log('fady wsolna 3al charge')
-			console.log(charge)
+		}).then(async (charge) => {
+			currentPackage.packageOption[optionNum - 1].availableQuantity = availableQuantity - 1
+			await currentPackage.save()
 			req.flash("success", "Payment sent Successfully");
 			res.redirect(`/event-owner/home/${eventid}`); // If no error occurs 
 		}).then(async (receipt) => {
