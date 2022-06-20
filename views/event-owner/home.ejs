@@ -44,7 +44,7 @@
 				<ul class="list-group list-group-flush options-list">
 					<% let counter=1 %>
 						<% for(let option of package.packageOption){ %>
-							<% if(option.optionDescription !=='' ){ %>
+							<% if(option.optionDescription !=='' && option.availableQuantity> 0 ){ %>
 								<li class="list-group-item option-card">
 									<h4>Option #<%= counter %>
 									</h4>
