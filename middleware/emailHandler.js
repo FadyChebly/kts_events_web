@@ -75,7 +75,7 @@ module.exports.contactUsRequest = async (req, res) => {
 		from: 'KTS event website',
 		to: process.env.EMAIL,
 		subject: 'Event Owner Contact Request',
-		text: `Hello KTS Team,\n\nKindly note that: ${req.body.name} has requested to be reached out. \n \nThese are the informations filled by ${req.body.name} \nName: ${req.body.name} \nEmail: ${req.body.email} \nPhone Number: ${req.body.phone}\nHis Message: ${req.body.feedback}\n\nThank you & Best Regards`
+		text: `Hello KTS Team,\n\nKindly note that: ${req.body.Fname} ${req.body.Lname} has requested to be reached out. \n \nThese are the informations filled by ${req.body.Fname} ${req.body.Lname} \nFirst Name: ${req.body.Fname}\nLast Name:${req.body.Lname} \nEmail: ${req.body.email} \nPhone Number: ${req.body.phone}\nEvent Type: ${req.body.eventType}\nHis Message: ${req.body.feedback}\n\nThank you & Best Regards`
 	};
 	transporter.sendMail(mailOptions, (err, res) => {
 		if (err) {
