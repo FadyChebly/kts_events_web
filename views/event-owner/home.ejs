@@ -52,24 +52,19 @@
 										<textarea type=" text" placeholder="First Option"
 											class="form-control margin-element" rows="5" cols="50"
 											disabled><%= option.optionDescription %> </textarea>
-										<form class="form-group"
-											action="/event-owner/<%= eventid %>/<%= package._id.toString() %>/<%=counter%>"
-											method="POST">
+										<div class="form-group">
 											<label>
 												Price: <%= option.price %> €
 											</label> <br>
 											<label>
 												Available Quantity: <%= option.availableQuantity%>
 											</label> <br>
-											<script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button"
-												data-key="<%= key %>" data-amount="<%= option.price %>00"
-												data-currency="eur" data-name="Package Pricing"
-												data-description="Buy Package for the selected event"
-												data-locale="auto">
-												</script>
-											<!-- <button class="btn btn-primary" id="price">Price: <%= option.price %>
-											</button> -->
-										</form>
+
+											<a class="btn btn-primary"
+												href="/event-owner/<%= eventid %>/<%= package._id.toString() %>/<%=counter%>">
+												Pay via PayPal
+											</a>
+										</div>
 									</div>
 								</li>
 								<% counter++ %>
@@ -79,14 +74,4 @@
 				<% } %>
 		</div>
 	</div>
-	<!-- <h2 class="header_two">Insert Invitees Emails List</h2>
-	<div class="row">
-		<div class="col-md-12 center-element">
-			<form class="form-group" enctype="multipart/form-data" action="/event-owner/home/<%= eventid  %> "
-				method="POST">
-				<input type="file" class="form-control margin-element" name="myFile" id="myFile" required />
-				<input type="submit" class="btn btn-primary">
-			</form>
-		</div>
-	</div> -->
 </div>

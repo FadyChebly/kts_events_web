@@ -2,60 +2,116 @@ const express = require('express');
 const router = express.Router();
 const Event = require('../models/kts-admin/event')
 const Package = require('../models/kts-admin/package')
+const Excursion = require('../models/kts-admin/excursion')
 const { isLoggedIn, isEventOwner } = require('../middleware/loggedIn')
 require('dotenv').config()
 
-const stripePrivateKey = process.env.STRIPE_PRIVATE_KEY
-const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
-const stripe = require('stripe')(stripePrivateKey)
+
+const paypal = require('paypal-rest-sdk')
+paypal.configure({
+	'mode': 'live', //sandbox or live
+	'client_id': 'AT_-WItSvpf-wCa-8vSkYucgxl5Ckj5qSm013duHJpA78oYxTUkRhqlSlZrd4eNz4iNhhhZKVL9wWYl5',
+	'client_secret': 'ECJC_ShlWhkmO_ZfRPTbGCbVqA-SKkLXXw9MEGhH6jCYHLmEzG_eQUUb8dVV8x562Dgn8eAcf4KGNG2n'
+});
 
 router.route('/home/:eventid')
 	.get(isLoggedIn, isEventOwner, async (req, res) => {
 		const { eventid } = req.params
 		const currentEvent = await Event.findById(eventid).populate('packages')
-		res.render('event-owner/home', { layout: "./layouts/Admin/event", title: "event owner", eventid, currentEvent, key: stripePublicKey })
+		res.render('event-owner/home', { layout: "./layouts/Admin/event", title: "event owner", eventid, currentEvent })
 	})
 
 router.route('/:eventid/:packageId/:optionNum')
-	.post(isLoggedIn, isEventOwner, async (req, res) => {
+	.get(isLoggedIn, isEventOwner, async (req, res) => {
 		const { eventid, packageId, optionNum } = req.params
 		const currentPackage = await Package.findById(packageId)
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
-		const optionPrice = currentPackageOption.price * 100
 		let availableQuantity = currentPackageOption.availableQuantity
-
-		stripe.customers.create({
-			email: req.body.stripeEmail,
-			source: req.body.stripeToken,
-			name: 'Package Pricing',
-		}).then((customer) => {
-			return stripe.charges.create({
-				amount: optionPrice,	 // Charing Rs 25 
-				description: `Dear Client\n\nYou have successfully paid and reserved the package:\n${currentPackage.title}\nYou have chosen the following option:\n${currentPackageOption.optionDescription}\n\n If any issues occures do not hesitate, and contact us!\n\n KTS support team.`,
-				currency: 'eur',
-				customer: customer.id,
-				receipt_email: req.body.stripeEmail
-			});
-		}).then(async (charge) => {
-			currentPackage.packageOption[optionNum - 1].availableQuantity = availableQuantity - 1
-			await currentPackage.save()
-			req.flash("success", "Payment sent Successfully");
-			res.redirect(`/event-owner/home/${eventid}`); // If no error occurs 
-		}).then(async (receipt) => {
-			await stripe.paymentIntents.create({
-				amount: optionPrice,
-				currency: 'eur',
-				payment_method_types: ['card'],
-				receipt_email: req.body.stripeEmail,
-				description: `Dear Client\n\nYou have successfully paid and reserved the package:\n${currentPackage.title}\nYou have chosen the following option:\n${currentPackageOption.optionDescription}\n\n If any issues occures do not hesitate, and contact us!\n\n KTS support team.`,
-			});
-		})
-			.catch((err) => {
-				req.flash("error", "Payment error");
-				res.redirect(`/event-owner/home/${eventid}`); // If no error occurs 
-			});
-
+		res.render('event-owner/payment-info', { layout: "./layouts/event-owner/pay", title: "Payment Info", eventid, currentPackage, optionNum, availableQuantity })
 	})
+	.post(isLoggedIn, isEventOwner, async (req, res) => {
+		const { eventid, packageId, optionNum } = req.params
+		const currentEvent = await Event.findById(eventid)
+		const currentPackage = await Package.findById(packageId)
+		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
+		const optionPrice = currentPackageOption.price
+
+		const create_payment_json = {
+			"intent": "sale",
+			"payer": {
+				"payment_method": "paypal"
+			},
+			"redirect_urls": {
+				"return_url": `/event-owner/${eventid}/${packageId}/${optionNum}/success`,
+				"cancel_url": "http://localhost:3000/event-owner/cancel"
+			},
+			"transactions": [{
+				"item_list": {
+					"items": [{
+						"name": currentEvent.title,
+						"sku": "001",
+						"price": optionPrice,
+						"currency": "EUR",
+						"quantity": 1
+					}]
+				},
+				"amount": {
+					"currency": "EUR",
+					"total": optionPrice
+				},
+				"description": currentPackageOption.optionDescription
+			}]
+		};
+
+		paypal.payment.create(create_payment_json, async function (error, payment) {
+			if (error) {
+				throw error;
+			} else {
+				for (let i = 0; i < payment.links.length; i++) {
+					if (payment.links[i].rel === 'approval_url') {
+						res.redirect(payment.links[i].href);
+						console.log(payment)
+						//it will create and save the excursion data
+						const newExcursion = new Excursion({ paymentID: payment.id, ...req.body })
+						await newExcursion.save().then(res => console.log(res))
+					}
+				}
+			}
+		});
+	})
+
+router.get('/:eventid/:packageId/:optionNum/success', async (req, res) => {
+	const { eventid, packageId, optionNum } = req.params
+	const currentEvent = await Event.findById(eventid)
+	const currentPackage = await Package.findById(packageId)
+	const currentPackageOption = currentPackage.packageOption[optionNum - 1]
+	const optionPrice = currentPackageOption.price
+	const payerId = req.query.PayerID;
+	const paymentId = req.query.paymentId;
+
+	const execute_payment_json = {
+		"payer_id": payerId,
+		"transactions": [{
+			"amount": {
+				"currency": "EUR",
+				"total": optionPrice
+			}
+		}]
+	};
+	// Obtains the transaction details from paypal
+	paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+		//When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
+		if (error) {
+			console.log(error.response);
+			throw error;
+		} else {
+			console.log(JSON.stringify(payment));
+			res.send('Success');
+		}
+	});
+});
+
+// router.get('/cancel', (req, res) => res.send('Cancelled'));
 
 
 

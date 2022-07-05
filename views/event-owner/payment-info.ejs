@@ -1,0 +1,50 @@
+<section class="contact-from-section spad">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="section-title">
+					<h2>Payments Info</h2>
+					<p>Fill out the form below to reserve your package</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<form action="/event-owner/<%= eventid %>/<%= currentPackage._id.toString() %>/<%=optionNum%>"
+					method="POST" class="comment-form contact-form">
+					<div class="row">
+						<div class="col-lg-4">
+							<label for="fName">First Name:</label>
+							<input type="text" placeholder="First Name" name="fName" id="fName" required>
+						</div>
+						<div class="col-lg-4">
+							<label for="lName">Last Name:</label>
+							<input type="text" placeholder="Last Name" name="lName" id="lName" required>
+						</div>
+						<div class="col-lg-4">
+							<label for="email">Email:</label>
+							<input type="text" placeholder="Email" name="email" id="email" required>
+						</div>
+						<div class="col-lg-4">
+							<label for="phone">Phone Number:</label>
+							<input type="text" placeholder="Phone Number" name="phone" id="phone" required>
+						</div>
+						<div class="col-lg-4">
+							<label for="whatsapp">Whatsapp Number:</label>
+							<input type="text" placeholder="Whatsapp Number" name="whatsapp" id="whatsapp" required>
+						</div>
+						<div class="col-lg-4">
+							<label for="dob">Date Of Birth:</label>
+							<input type="date" placeholder="Date Of Birth" name="dob" id="dob" required>
+						</div>
+						<div class="col-lg-12 text-center">
+							<!-- <label for="Quantity">Quantity to be purchase</label>
+							<input type="number" placeholder="Quantity" name="quantity" id="Quantity" required> -->
+							<button type="submit" class="site-btn">Pay Via PayPal</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</section>
