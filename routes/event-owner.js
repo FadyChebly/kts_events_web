@@ -3,6 +3,7 @@ const router = express.Router();
 const Event = require('../models/kts-admin/event')
 const Package = require('../models/kts-admin/package')
 const Excursion = require('../models/kts-admin/excursion')
+const { voucherMail, excursionMail } = require('../middleware/emailHandler')
 const { isLoggedIn, isEventOwner } = require('../middleware/loggedIn')
 require('dotenv').config()
 
@@ -73,7 +74,11 @@ router.route('/:eventid/:packageId/:optionNum')
 						console.log(payment)
 						//it will create and save the excursion data
 						const newExcursion = new Excursion({ paymentID: payment.id, ...req.body })
-						await newExcursion.save().then(res => console.log(res))
+						await newExcursion.save().then(async (result) => {
+							console.log(result)
+							await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, result)
+						})
+
 					}
 				}
 			}
@@ -99,19 +104,22 @@ router.get('/:eventid/:packageId/:optionNum/success', async (req, res) => {
 		}]
 	};
 	// Obtains the transaction details from paypal
-	paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+	paypal.payment.execute(paymentId, execute_payment_json, async function (error, payment) {
 		//When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
 		if (error) {
 			console.log(error.response);
 			throw error;
 		} else {
 			console.log(JSON.stringify(payment));
+			const paymentObj = JSON.stringify(payment)
+			const currentExcursion = await Excursion.find({ paymentID: paymentObj.id })
 			res.send('Success');
+			await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
 		}
 	});
 });
 
-// router.get('/cancel', (req, res) => res.send('Cancelled'));
+router.get('/cancel', (req, res) => res.send('Cancelled'));
 
 
 

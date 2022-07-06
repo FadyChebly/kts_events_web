@@ -1,5 +1,7 @@
 require('dotenv').config()
+const path = require('path')
 const nodemailer = require('nodemailer')
+const hbs = require('nodemailer-express-handlebars')
 const { google } = require('googleapis')
 CLIENT_ID = "796793058386-5mfl2b7gqj6r298boo6ekrva2rp649kr.apps.googleusercontent.com"
 CLIENT_SECRET = "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"
@@ -101,4 +103,141 @@ module.exports.contactUsRequest = async (req, res) => {
 		}
 	});
 	res.redirect('contact')
+}
+
+module.exports.voucherMail = async (req, res, currentEvent, currentPackage, currentPackageOption, userData) => {
+	const accessToken = await oAuth2Client.getAccessToken()
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			type: 'OAuth2',
+			user: process.env.EMAIL,
+			clientId: CLIENT_ID,
+			clientSecret: CLIENT_SECRET,
+			refreshToken: REFRESH_TOKEN,
+			accessToken: accessToken
+		}
+	});
+
+	const handlebarOptions = {
+		viewEngine: {
+			extName: ".handlebars",
+			partialsDir: path.resolve('./views'),
+			defaultLayout: false,
+		},
+		viewPath: path.resolve('./views'),
+		extName: ".handlebars",
+	}
+
+	transporter.use('compile', hbs(handlebarOptions));
+
+	let date = new Date();
+	let year = date.getFullYear();
+	let month = date.getMonth() + 1;
+	let day = date.getDate();
+	let fulldate = month + "/" + day + "/" + year;
+
+	var mailOptions = {
+		from: 'KTS events website',
+		to: userData.email,
+		subject: 'KTS Voucher',
+		template: 'emails/voucher',
+		context: {
+			eventTitle: currentEvent.title,
+			packageUrl: currentPackage.image_url,
+			lastName: userData.lName,
+			firstName: userData.fName,
+			date: fulldate
+
+		}
+	};
+	transporter.sendMail(mailOptions, (err, res) => {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log('KTS success')
+		}
+	});
+
+	var mailOptions = {
+		from: 'KTS events website',
+		to: process.env.EMAIL,
+		subject: 'KTS Voucher',
+		text: `Hello KTS Team,\n\nKindly note that: ${userData.lName} ${userData.fName} has purchased ${currentPackage.title} package: \n \nThese are the informations of the package purchased:\nEvent Name: ${currentEvent.title}\nPackage Name: ${currentPackage.title}\nOption Description: ${currentPackageOption.optionDescription}\nOption Price: ${currentPackageOption.price} EUR\n\n\nThank you & Best Regards`
+
+	};
+	transporter.sendMail(mailOptions, (err, res) => {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log('success')
+		}
+	});
+}
+
+module.exports.excursionMail = async (req, res, currentEvent, currentPackage, currentPackageOption, userData) => {
+	const accessToken = await oAuth2Client.getAccessToken()
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			type: 'OAuth2',
+			user: process.env.EMAIL,
+			clientId: CLIENT_ID,
+			clientSecret: CLIENT_SECRET,
+			refreshToken: REFRESH_TOKEN,
+			accessToken: accessToken
+		}
+	});
+
+	const handlebarOptions = {
+		viewEngine: {
+			extName: ".handlebars",
+			partialsDir: path.resolve('./views'),
+			defaultLayout: false,
+		},
+		viewPath: path.resolve('./views'),
+		extName: ".handlebars",
+	}
+
+	transporter.use('compile', hbs(handlebarOptions));
+
+	var mailOptions = {
+		from: 'KTS events website',
+		to: userData.email,
+		subject: 'KTS Excursion',
+		template: 'emails/excursion',
+		context: {
+			eventTitle: currentEvent.title,
+			packageUrl: currentPackage.image_url,
+			lastName: userData.lName,
+			firstName: userData.fName,
+
+		}
+	};
+	transporter.sendMail(mailOptions, (err, res) => {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log('KTS success')
+		}
+	});
+
+	var mailOptions = {
+		from: 'KTS events website',
+		to: process.env.EMAIL,
+		subject: 'KTS Voucher',
+		text: `Hello KTS Team,\n\nKindly note that: ${userData.lName} ${userData.fName} has purchased ${currentPackage.title} package: \n \nThese are the informations of the package purchased:\nEvent Name: ${currentEvent.title}\nPackage Name: ${currentPackage.title}\nOption Description: ${currentPackageOption.optionDescription}\nOption Price: ${currentPackageOption.price} EUR\n\n\nThank you & Best Regards`
+
+	};
+	transporter.sendMail(mailOptions, (err, res) => {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log('success')
+		}
+	});
 }
