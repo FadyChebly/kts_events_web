@@ -74,9 +74,9 @@ router.route('/:eventid/:packageId/:optionNum')
 						console.log(payment)
 						//it will create and save the excursion data
 						const newExcursion = new Excursion({ paymentID: payment.id, ...req.body })
-						await newExcursion.save().then(async (result) => {
+						await newExcursion.save().then((result) => {
 							console.log(result)
-							await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, result)
+							// await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, result)
 						})
 
 					}
@@ -115,6 +115,9 @@ router.get('/:eventid/:packageId/:optionNum/success', async (req, res) => {
 			const currentExcursion = await Excursion.find({ paymentID: paymentObj.id })
 			res.send('Success');
 			await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+			await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+			res.redirect(`/event-owner/home/${eventid}`)
+
 		}
 	});
 });

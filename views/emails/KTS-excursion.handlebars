@@ -41,16 +41,24 @@
 <body>
 	<header>
 		<img src="https://res.cloudinary.com/kts-france/image/upload/v1657143212/kts-logo_ttjxi2.png" alt="">
-		<h1 class="text-center">{{eventTitle}}</h1>
 	</header>
+	<p>Hello KTS team</p>
+	<p>Kindly note that {{lastName}} {{firstName}}, booked the following excursion:</p>
 	<img src=`{{packageUrl}}` class="rounded mx-auto d-block" alt="...">
 	<br> <br>
-	<p>Dear <b> {{lastName}} {{firstName}}</b></p>
-	<p>Thank you for your registration</p>
-	<p>You have successfully registered the following:</p>
 	<h2 class="text-center">{{eventTitle}}</h2>
 	<div>{{packageDescription}}</div>
 	<div>At the following price: {{packagePrice}} EUR</div>
+	<div>PayPal Payment ID: {{paypalID}} </div>
+	<br>
+	<br>
+	<p>Find the customer details below:</p>
+	<div>First Name: {{firstName}}</div>
+	<div>Last Name: {{lastName}}</div>
+	<div>Email: {{email}}</div>
+	<div>Phone Number: {{Phone}}</div>
+	<div>Whatsapp Number: {{whatsapp}}</div>
+	<div>Date Of Birth: {{dob}}</div>
 	<hr>
 	<br>
 	<br>

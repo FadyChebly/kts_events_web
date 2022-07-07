@@ -211,6 +211,8 @@ module.exports.excursionMail = async (req, res, currentEvent, currentPackage, cu
 		context: {
 			eventTitle: currentEvent.title,
 			packageUrl: currentPackage.image_url,
+			packageDescription: currentPackageOption.optionDescription,
+			packagePrice: currentPackageOption.price,
 			lastName: userData.lName,
 			firstName: userData.fName,
 
@@ -228,9 +230,22 @@ module.exports.excursionMail = async (req, res, currentEvent, currentPackage, cu
 	var mailOptions = {
 		from: 'KTS events website',
 		to: process.env.EMAIL,
-		subject: 'KTS Voucher',
-		text: `Hello KTS Team,\n\nKindly note that: ${userData.lName} ${userData.fName} has purchased ${currentPackage.title} package: \n \nThese are the informations of the package purchased:\nEvent Name: ${currentEvent.title}\nPackage Name: ${currentPackage.title}\nOption Description: ${currentPackageOption.optionDescription}\nOption Price: ${currentPackageOption.price} EUR\n\n\nThank you & Best Regards`
+		subject: 'KTS Excursion',
+		template: 'emails/KTS-excursion',
+		context: {
+			eventTitle: currentEvent.title,
+			packageUrl: currentPackage.image_url,
+			packageDescription: currentPackageOption.optionDescription,
+			packagePrice: currentPackageOption.price,
+			lastName: userData.lName,
+			firstName: userData.fName,
+			email: userData.email,
+			Phone: userData.phone,
+			whatsapp: userData.whatsapp,
+			dob: userData.dob,
+			paypalID: userData.paymentID
 
+		}
 	};
 	transporter.sendMail(mailOptions, (err, res) => {
 		if (err) {
