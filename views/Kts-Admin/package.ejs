@@ -46,6 +46,11 @@
 
 			<button class="button" style="width: 100%;">Submit</button>
 		</form>
+		<div class="display-flex-column col-md-12">
+			<form action="/kts-admin/<%= packageId %>/Excursion">
+				<button class="button btn-primary">Excursion data download</button>
+			</form>
+		</div>
 		<form action="/kts-admin/delete/package/<%=packageId%>/event/<%= id %>?_method=DELETE" method="POST">
 			<button class="button" style="width: 100%;">Delete</button>
 		</form>

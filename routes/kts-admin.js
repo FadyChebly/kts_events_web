@@ -5,8 +5,50 @@ const { storage, cloudinary } = require('../cloudinary')
 const upload = multer({ storage })
 const Package = require('../models/kts-admin/package')
 const Event = require('../models/kts-admin/event')
+const Excursion = require('../models/kts-admin/excursion')
 const { isLoggedIn, isAdmin } = require('../middleware/loggedIn')
+const mime = require('mime')
+const xl = require('excel4node')
+const path = require('path')
 const User = require('../models/kts-admin/user')
+const os = require('os');
+const desktopDir = path.join(os.homedir(), "Desktop");
+const headerColumns = ["Payment ID", "First Name", "Last Name", "Email", "Phone", "Whatsapp", "Date Of Birth", "Successful Payment", "Package ID"]
+
+
+router.get("/:packageid/Excursion", async (req, res) => {
+	const { packageid } = req.params
+	const data = await Excursion.find({ packageID: packageid, success: true })
+	console.log(data)
+	const wb = new xl.Workbook()
+	const ws = wb.addWorksheet("Excursion")
+	let colIndex = 1
+	headerColumns.forEach((item) => {
+		ws.cell(1, colIndex++).string(item)
+	})
+	let rowIndex = 2;
+	data.forEach((item) => {
+		let columnIndex = 1;
+		Object.keys(item).forEach((colName) => {
+			ws.cell(rowIndex, columnIndex++).string(item[colName])
+		})
+		rowIndex++;
+	})
+
+	wb.write("Excursion.xlsx", res)
+
+	// const file = desktopDir + "\Excursion.xlsx"
+	// console.log(file)
+	// const fileName = path.basename(file)
+	// const mimeType = mime.getType(file)
+	// res.setHeader("Content-Disposition", "attachment;filename=" + fileName)
+	// res.setHeader("Content-Type", mimeType)
+
+	// setTimeout(() => {
+	// 	res.download(file)
+	// 	console.log('success download')
+	// }, 2000);
+})
 
 router.get('/home', isLoggedIn, isAdmin, async (req, res) => {
 	const events = await Event.find({})
@@ -144,4 +186,4 @@ router.post('/SaveEvent/:eventid', isLoggedIn, isAdmin, async (req, res) => {
 	res.redirect('/kts-admin/home')
 })
 
-module.exports = router
+module.exports = router;

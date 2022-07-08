@@ -23,6 +23,13 @@ const ExcursionSchema = new Schema({
 	},
 	dob: {
 		type: String,
+	},
+	success: {
+		type: Boolean,
+		default: false
+	},
+	packageID: {
+		type: String,
 	}
 
 })

@@ -53,8 +53,7 @@ router.route('/login')
 	})
 
 router.post('/logout', (req, res) => {
-	req.logout();
-	req.flash('success', "Goodbye!");
+	// req.logout();
 	res.redirect('/login');
 })
 
