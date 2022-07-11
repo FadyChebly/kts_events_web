@@ -157,6 +157,8 @@ router.route('/pay')
 		try {
 			const order = await paypalClient.execute(request)
 			res.json({ id: order.result.id })
+			console.log('payment success')
+			console.log(res.json())
 		} catch (e) {
 			res.status(500).json({ error: e.message })
 		}
