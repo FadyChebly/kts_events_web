@@ -7,6 +7,7 @@ const { voucherMail, excursionMail } = require('../middleware/emailHandler')
 const { isLoggedIn, isEventOwner } = require('../middleware/loggedIn')
 require('dotenv').config()
 
+let ayreBelNabe = []
 
 const paypal = require('@paypal/checkout-server-sdk')
 const Environment =
@@ -107,14 +108,18 @@ router.route('/:eventid/:packageId/:optionNum')
 
 router.route('/:eventid/:packageId/:optionNum/pay')
 	.get(isLoggedIn, isEventOwner, async (req, res) => {
+		ayreBelNabe = []
 		const { eventid, packageId, optionNum } = req.params
+		ayreBelNabe = [eventid, packageId, optionNum]
+		console.log(`ayre b rab alla ${ayreBelNabe}`)
 		const clientID = 'AT_-WItSvpf-wCa-8vSkYucgxl5Ckj5qSm013duHJpA78oYxTUkRhqlSlZrd4eNz4iNhhhZKVL9wWYl5'
 		res.render('event-owner/payment', { layout: "./layouts/event-owner/pay", title: "Payment Info", eventid, packageId, optionNum, clientID })
 
 	})
+router.route('/pay')
 	.post(isLoggedIn, isEventOwner, async (req, res) => {
-		const { eventid, packageId, optionNum } = req.params
-		const currentPackage = await Package.findById(packageId)
+		const optionNum = ayreBelNabe[2]
+		const currentPackage = await Package.findById(ayreBelNabe[1])
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
 		const request = new paypal.orders.OrdersCreateRequest()
 		const total = currentPackageOption.price
@@ -134,13 +139,14 @@ router.route('/:eventid/:packageId/:optionNum/pay')
 						},
 					},
 					items: req.body.items.map(item => {
+						console.log(item)
 						return {
 							name: currentPackage.title,
 							unit_amount: {
 								currency_code: "EUR",
 								value: currentPackageOption.price,
 							},
-							description: currentPackageOption.optionDescription,
+							// description: currentPackageOption.optionDescription,
 							quantity: 1,
 						}
 					}),

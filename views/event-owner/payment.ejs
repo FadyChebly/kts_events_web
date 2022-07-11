@@ -1,12 +1,13 @@
-<script src="https://www.paypal.com/sdk/js?client-id=<%= clientID %> "></script>
+<script src="https://www.paypal.com/sdk/js?client-id=<%= clientID %>"></script>
 
 <div id="paypal"></div>
+
 
 <script>
 	paypal
 		.Buttons({
 			createOrder: function () {
-				return fetch("/event-owner/<%=eventid%>/<%=packageId%>/<%=optionNum%>/pay", {
+				return fetch("/pay", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -14,8 +15,8 @@
 					body: JSON.stringify({
 						items: [
 							{
-								id: packageId,
-								option: optionNum,
+								id: 1,
+								option: 1,
 							},
 						],
 					}),
@@ -23,6 +24,7 @@
 					.then(res => {
 						if (res.ok) return res.json()
 						return res.json().then(json => Promise.reject(json))
+						console.log('ayre bel nabe')
 					})
 					.then(({ id }) => {
 						return id
