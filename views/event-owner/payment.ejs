@@ -1,0 +1,39 @@
+<script src="https://www.paypal.com/sdk/js?client-id=<%= clientID %> "></script>
+
+<div id="paypal"></div>
+
+<script>
+	paypal
+		.Buttons({
+			createOrder: function () {
+				return fetch("/event-owner/<%=eventid%>/<%=packageId%>/<%=optionNum%>/pay", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						items: [
+							{
+								id: packageId,
+								option: optionNum,
+							},
+						],
+					}),
+				})
+					.then(res => {
+						if (res.ok) return res.json()
+						return res.json().then(json => Promise.reject(json))
+					})
+					.then(({ id }) => {
+						return id
+					})
+					.catch(e => {
+						console.error(e.error)
+					})
+			},
+			onApprove: function (data, actions) {
+				return actions.order.capture()
+			},
+		})
+		.render("#paypal")
+</script>
