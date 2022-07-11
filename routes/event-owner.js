@@ -8,23 +8,18 @@ const { isLoggedIn, isEventOwner } = require('../middleware/loggedIn')
 require('dotenv').config()
 
 let ayreBelNabe = []
+let customer = {}
+CurrentEventID = 0
 
 const paypal = require('@paypal/checkout-server-sdk')
 const Environment =
 	process.env.NODE_ENV = paypal.core.LiveEnvironment
-// ?
-// : paypal.core.SandboxEnvironment
 const paypalClient = new paypal.core.PayPalHttpClient(
 	new Environment(
 		process.env.PAYPAL_CLIENT_ID,
 		process.env.PAYPAL_CLIENT_SECRET
 	)
 )
-// paypal.configure({
-// 	'mode': 'live', //sandbox or live
-// 	'client_id': 'AT_-WItSvpf-wCa-8vSkYucgxl5Ckj5qSm013duHJpA78oYxTUkRhqlSlZrd4eNz4iNhhhZKVL9wWYl5',
-// 	'client_secret': 'ECJC_ShlWhkmO_ZfRPTbGCbVqA-SKkLXXw9MEGhH6jCYHLmEzG_eQUUb8dVV8x562Dgn8eAcf4KGNG2n'
-// });
 
 router.route('/home/:eventid')
 	.get(isLoggedIn, isEventOwner, async (req, res) => {
@@ -35,6 +30,7 @@ router.route('/home/:eventid')
 
 router.route('/:eventid/:packageId/:optionNum')
 	.get(isLoggedIn, isEventOwner, async (req, res) => {
+		customer = []
 		const { eventid, packageId, optionNum } = req.params
 		const currentPackage = await Package.findById(packageId)
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
@@ -43,67 +39,15 @@ router.route('/:eventid/:packageId/:optionNum')
 	})
 	.post(isLoggedIn, isEventOwner, async (req, res) => {
 		const { eventid, packageId, optionNum } = req.params
-		// const currentEvent = await Event.findById(eventid)
-		// const currentPackage = await Package.findById(packageId)
-		// const currentPackageOption = currentPackage.packageOption[optionNum - 1]
-		// const optionPrice = currentPackageOption.price
-
 		const newExcursion = new Excursion({ packageID: packageId, ...req.body })
 		await newExcursion.save().then((result) => {
+			CurrentEventID = eventid
+			customer = newExcursion
+			console.log(`Hayda ek customer ${customer}`)
+			console.log(`hayda el event id ${CurrentEventID}`)
 			console.log(result)
-			// await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, result)
 			res.redirect(`/event-owner/${eventid}/${packageId}/${optionNum}/pay`)
 		})
-
-		// console.log(`price el 5ara: ${optionPrice}`)
-
-		// const create_payment_json = {
-		// 	"intent": "sale",
-		// 	"payer": {
-		// 		"payment_method": "paypal"
-		// 	},
-		// 	"redirect_urls": {
-		// 		"return_url": `/event-owner/${eventid}/${packageId}/${optionNum}/success`,
-		// 		"cancel_url": "http://localhost:3000/event-owner/cancel"
-		// 	},
-		// 	"transactions": [{
-		// 		"item_list": {
-		// 			"items": [{
-		// 				"name": currentEvent.title,
-		// 				"sku": "001",
-		// 				"price": optionPrice,
-		// 				"currency": "EUR",
-		// 				"quantity": 1
-		// 			}]
-		// 		},
-		// 		"amount": {
-		// 			"currency": "EUR",
-		// 			"total": optionPrice
-		// 		},
-		// 		"description": currentPackageOption.optionDescription
-		// 	}]
-		// };
-
-		// paypal.payment.create(create_payment_json, async function (error, payment) {
-		// 	if (error) {
-		// 		console.log('ayre bel error')
-		// 		throw error;
-		// 	} else {
-		// 		for (let i = 0; i < payment.links.length; i++) {
-		// 			if (payment.links[i].rel === 'approval_url') {
-		// 				res.redirect(payment.links[i].href);
-		// 				console.log(payment)
-		// 				//it will create and save the excursion data
-		// 				const newExcursion = new Excursion({ paymentID: payment.id, packageID: packageId, ...req.body })
-		// 				await newExcursion.save().then((result) => {
-		// 					console.log(result)
-		// 					// await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, result)
-		// 				})
-
-		// 			}
-		// 		}
-		// 	}
-		// });
 	})
 
 router.route('/:eventid/:packageId/:optionNum/pay')
@@ -158,54 +102,18 @@ router.route('/pay')
 			const order = await paypalClient.execute(request)
 			res.json({ id: order.result.id })
 			console.log('payment success')
-			console.log(res.json())
+			const currentEvent = await Event.findById(CurrentEventID)
+			const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
+			console.log(`updated excursion ${currentExcursion}`)
+			await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+			await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+			req.flash('success', 'Successful Payment')
 		} catch (e) {
 			res.status(500).json({ error: e.message })
 		}
+		res.redirect(`/event-owner/home/${CurrentEventID}`)
+
 	})
-
-
-router.get('/:eventid/:packageId/:optionNum/success', async (req, res) => {
-	const { eventid, packageId, optionNum } = req.params
-	const currentEvent = await Event.findById(eventid)
-	const currentPackage = await Package.findById(packageId)
-	const currentPackageOption = currentPackage.packageOption[optionNum - 1]
-	const optionPrice = currentPackageOption.price
-	const payerId = req.query.PayerID;
-	const paymentId = req.query.paymentId;
-
-	console.log('wsolna nedfa3')
-	const execute_payment_json = {
-		"payer_id": payerId,
-		"transactions": [{
-			"amount": {
-				"currency": "EUR",
-				"total": optionPrice
-			}
-		}]
-	};
-	// Obtains the transaction details from paypal
-	paypal.payment.execute(paymentId, execute_payment_json, async function (error, payment) {
-		//When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
-		if (error) {
-			console.log('error bel execute')
-			console.log(error.response);
-			throw error;
-		} else {
-			console.log(JSON.stringify(payment));
-			const paymentObj = JSON.stringify(payment)
-			const neededExcursion = await Excursion.find({ paymentID: paymentObj.id })
-			const currentExcursion = await Excursion.findByIdAndUpdate(neededExcursion._id, { success: true })
-			res.send('Success');
-			await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-			await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-			res.redirect(`/event-owner/home/${eventid}`)
-
-		}
-	});
-});
-
-
 
 
 module.exports = router;

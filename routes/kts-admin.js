@@ -13,7 +13,7 @@ const path = require('path')
 const User = require('../models/kts-admin/user')
 const os = require('os');
 const desktopDir = path.join(os.homedir(), "Desktop");
-const headerColumns = ["Payment ID", "First Name", "Last Name", "Email", "Phone", "Whatsapp", "Date Of Birth", "Successful Payment", "Package ID"]
+const headerColumns = ["First Name", "Last Name", "Email", "Phone", "Whatsapp", "Date Of Birth", "Successful Payment", "Package ID"]
 
 
 router.get("/:packageid/Excursion", async (req, res) => {
@@ -28,10 +28,18 @@ router.get("/:packageid/Excursion", async (req, res) => {
 	})
 	let rowIndex = 2;
 	data.forEach((item) => {
+		const dbObj = [item.fName, item.lName, item.email, item.phone, item.whatsapp, item.dob, item.success, item.packageID]
 		let columnIndex = 1;
-		Object.keys(item).forEach((colName) => {
-			ws.cell(rowIndex, columnIndex++).string(item[colName])
-		})
+		for (let i = 0; i < dbObj.length; i++) {
+			ws.cell(rowIndex, columnIndex++).string(dbObj[i].toString())
+		}
+		// Object.keys(item).forEach((colName) => {
+		// 	if (colName != "_id") {
+		// 		console.log(item[colName].toString())
+		// 		// ws.cell(rowIndex, columnIndex++).string(item[colName].toString())
+		// 	}
+
+		// })
 		rowIndex++;
 	})
 
