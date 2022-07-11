@@ -113,7 +113,7 @@ router.route('/:eventid/:packageId/:optionNum/pay')
 		ayreBelNabe = [eventid, packageId, optionNum]
 		console.log(`ayre b rab alla ${ayreBelNabe}`)
 		const clientID = 'AT_-WItSvpf-wCa-8vSkYucgxl5Ckj5qSm013duHJpA78oYxTUkRhqlSlZrd4eNz4iNhhhZKVL9wWYl5'
-		res.render('event-owner/payment', { layout: "./layouts/event-owner/pay", title: "Payment Info", eventid, packageId, optionNum, clientID })
+		res.render('event-owner/payment', { layout: "./layouts/event-owner/ensa", title: "Payment Info", eventid, packageId, optionNum, clientID })
 
 	})
 router.route('/pay')

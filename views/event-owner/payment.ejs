@@ -1,7 +1,7 @@
-<script src="https://www.paypal.com/sdk/js?client-id=<%= clientID %>"></script>
+<script
+	src="https://www.paypal.com/sdk/js?client-id=AT_-WItSvpf-wCa-8vSkYucgxl5Ckj5qSm013duHJpA78oYxTUkRhqlSlZrd4eNz4iNhhhZKVL9wWYl5"></script>
 
 <div id="paypal"></div>
-
 
 <script>
 	paypal
@@ -23,8 +23,8 @@
 				})
 					.then(res => {
 						if (res.ok) return res.json()
-						return res.json().then(json => Promise.reject(json))
 						console.log('ayre bel nabe')
+						return res.json().then(json => Promise.reject(json))
 					})
 					.then(({ id }) => {
 						return id
