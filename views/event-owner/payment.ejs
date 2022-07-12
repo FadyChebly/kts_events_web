@@ -33,6 +33,18 @@
 					})
 			},
 			onApprove: function (data, actions) {
+				return fetch("/event-owner/send-emails", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						items:
+						{
+							id: 1,
+						},
+					}),
+				})
 				return actions.order.capture()
 			},
 		})

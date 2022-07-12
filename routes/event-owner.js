@@ -56,6 +56,7 @@ router.route('/:eventid/:packageId/:optionNum/pay')
 		res.render('event-owner/payment', { layout: "./layouts/event-owner/ensa", title: "Payment Info", eventid, packageId, optionNum, clientID })
 
 	})
+
 router.route('/pay')
 	.post(isLoggedIn, isEventOwner, async (req, res) => {
 		const optionNum = ayreBelNabe[2]
@@ -86,7 +87,6 @@ router.route('/pay')
 								currency_code: "EUR",
 								value: currentPackageOption.price,
 							},
-							// description: currentPackageOption.optionDescription,
 							quantity: 1,
 						}
 					}),
@@ -98,17 +98,31 @@ router.route('/pay')
 			const order = await paypalClient.execute(request)
 			res.json({ id: order.result.id })
 			console.log('payment success')
-			const currentEvent = await Event.findById(CurrentEventID)
-			const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
-			console.log(`updated excursion ${currentExcursion}`)
-			await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-			await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-			req.flash('success', 'Successful Payment')
+			console.log(`ayre bel nabe /event-owner/home/${CurrentEventID}`)
+			// const currentEvent = await Event.findById(CurrentEventID)
+			// const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
+			// console.log(`updated excursion ${currentExcursion}`)
+			// await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+			// await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
 		} catch (e) {
 			res.status(500).json({ error: e.message })
 		}
-		res.redirect(`/event-owner/home/${CurrentEventID}`)
 
+	})
+
+router.route('/send-emails')
+	.post(async (req, res) => {
+		const optionNum = ayreBelNabe[2]
+		const currentPackage = await Package.findById(ayreBelNabe[1])
+		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
+		const currentEvent = await Event.findById(CurrentEventID)
+		const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
+		console.log(`updated excursion ${currentExcursion}`)
+		await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+		await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion).then(() => {
+			req.flash('success', 'Successful Payment')
+			res.redirect(`/event-owner/home/${CurrentEventID}`)
+		})
 	})
 
 
