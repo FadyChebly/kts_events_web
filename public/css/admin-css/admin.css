@@ -71,6 +71,16 @@ table {
 	color: white !important;
 }
 
+@media (max-width: 1000px) {
+
+	.options-list {
+		display: inline !important;
+		flex-direction: inherit !important;
+		color: white !important;
+	}
+}
+
+
 .option-container {
 	display: flex;
 	flex-direction: column;

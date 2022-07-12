@@ -2247,6 +2247,10 @@ ol {
 }
 
 @media only screen and (max-width: 991px) {
+	body {
+		height: 100%;
+	}
+
 	.schedule-tab .st-content .sc-pic {
 		text-align: left;
 		padding: 30px 0 0;
@@ -2339,6 +2343,10 @@ ol {
 /* Tablet Device: 768px */
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
+	body {
+		height: 100%;
+	}
+
 	.nav-menu .primary-btn.top-btn {
 		display: none;
 	}
@@ -2367,6 +2375,10 @@ ol {
 /* Large Mobile: 480px */
 
 @media only screen and (max-width: 767px) {
+	body {
+		height: 100%;
+	}
+
 	.counter-section .cd-timer .cd-item {
 		margin-bottom: 10px;
 	}
@@ -2485,6 +2497,9 @@ ol {
 /* Small Mobile: 320px */
 
 @media only screen and (max-width: 479px) {
+	body {
+		height: 100%;
+	}
 
 	.bh-text h2,
 	.hero-section .hero-text h2 {

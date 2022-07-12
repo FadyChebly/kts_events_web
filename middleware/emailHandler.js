@@ -55,6 +55,7 @@ module.exports.newsLetterSubscribe = async (req, res) => {
 		}
 	});
 
+	req.flash('success', 'Your newsLetter subscription request was sent successfully ')
 	res.redirect('/')
 }
 
@@ -102,6 +103,7 @@ module.exports.contactUsRequest = async (req, res) => {
 			console.log('success')
 		}
 	});
+	req.flash('success', 'Your request was sent successfully ')
 	res.redirect('contact')
 }
 

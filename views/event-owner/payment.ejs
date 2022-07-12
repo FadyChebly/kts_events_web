@@ -23,7 +23,6 @@
 				})
 					.then(res => {
 						if (res.ok) return res.json()
-						console.log('ayre bel nabe')
 						return res.json().then(json => Promise.reject(json))
 					})
 					.then(({ id }) => {

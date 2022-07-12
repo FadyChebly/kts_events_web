@@ -31,9 +31,7 @@ router.route('/login')
 		res.render('Landing-Pages/login', { layout: "./layouts/login-layout", title: "Login" })
 	})
 	.post(passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
-		req.flash('success', 'welcome back!');
 		const { isAdmin } = req.user
-		console.log(`${isAdmin}`)
 		let redirectUrl = req.session.returnTo || '/login';
 		if (isAdmin == 2) {
 			redirectUrl = req.session.returnTo || '/kts-admin/home';
@@ -66,7 +64,6 @@ router.post('/register', catchAsync(async (req, res, next) => {
 			if (err) return next(err);
 			req.flash('success', 'Welcome!');
 			res.redirect('/login');
-			console.log(registeredUser)
 		})
 	} catch (e) {
 		req.flash('error', e.message);

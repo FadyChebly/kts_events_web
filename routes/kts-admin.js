@@ -103,7 +103,6 @@ router.route('/event/:eventid/details')
 		const { eventid } = req.params
 		await Event.findByIdAndUpdate({ _id: eventid }, req.body)
 		const savedEvent = await Event.findById(eventid)
-		console.log(`added title and description ${savedEvent}`)
 		res.redirect(`/Kts-Admin/event/${eventid}`)
 	})
 
@@ -112,7 +111,6 @@ router.route('/event/:id')
 		const { id } = req.params
 		let event = await Event.findById(id)
 		let Packages = await event.populate('packages')
-		console.log(`${Packages}`)
 		res.render('Kts-Admin/event', { layout: "./layouts/Admin/event", title: "Event", event, id, Packages })
 	})
 	.delete(isLoggedIn, isAdmin, async (req, res) => {
@@ -149,7 +147,6 @@ router.route('/event/:id/package')
 		addedPackage.image_url = imagedetails.path
 		addedPackage.image_filename = imagedetails.filename
 		await addedPackage.save()
-		console.log(`${addedPackage}`)
 		event.packages.push(addedPackage._id)
 		await event.save()
 		res.redirect(`/kts-admin/event/${id}`)
@@ -190,7 +187,6 @@ router.post('/SaveEvent/:eventid', isLoggedIn, isAdmin, async (req, res) => {
 	const { eventid } = req.params
 	await Event.findByIdAndUpdate({ _id: eventid }, req.body)
 	const savedEvent = await Event.findById(eventid)
-	console.log(savedEvent)
 	res.redirect('/kts-admin/home')
 })
 

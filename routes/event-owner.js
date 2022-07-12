@@ -43,9 +43,6 @@ router.route('/:eventid/:packageId/:optionNum')
 		await newExcursion.save().then((result) => {
 			CurrentEventID = eventid
 			customer = newExcursion
-			console.log(`Hayda ek customer ${customer}`)
-			console.log(`hayda el event id ${CurrentEventID}`)
-			console.log(result)
 			res.redirect(`/event-owner/${eventid}/${packageId}/${optionNum}/pay`)
 		})
 	})
@@ -55,7 +52,6 @@ router.route('/:eventid/:packageId/:optionNum/pay')
 		ayreBelNabe = []
 		const { eventid, packageId, optionNum } = req.params
 		ayreBelNabe = [eventid, packageId, optionNum]
-		console.log(`ayre b rab alla ${ayreBelNabe}`)
 		const clientID = 'AT_-WItSvpf-wCa-8vSkYucgxl5Ckj5qSm013duHJpA78oYxTUkRhqlSlZrd4eNz4iNhhhZKVL9wWYl5'
 		res.render('event-owner/payment', { layout: "./layouts/event-owner/ensa", title: "Payment Info", eventid, packageId, optionNum, clientID })
 
