@@ -97,13 +97,6 @@ router.route('/pay')
 		try {
 			const order = await paypalClient.execute(request)
 			res.json({ id: order.result.id })
-			console.log('payment success')
-			console.log(`ayre bel nabe /event-owner/home/${CurrentEventID}`)
-			// const currentEvent = await Event.findById(CurrentEventID)
-			// const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
-			// console.log(`updated excursion ${currentExcursion}`)
-			// await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-			// await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
 		} catch (e) {
 			res.status(500).json({ error: e.message })
 		}
@@ -114,15 +107,18 @@ router.route('/send-emails')
 	.post(async (req, res) => {
 		const optionNum = ayreBelNabe[2]
 		const currentPackage = await Package.findById(ayreBelNabe[1])
+		let packageOptions = currentPackage.packageOption
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
+		const currentPackageQty = currentPackage.packageOption[optionNum - 1].availableQuantity
+		packageOptions[optionNum - 1].availableQuantity = currentPackageQty - 1
+		console.log(`el options saro hek ${packageOptions}`)
 		const currentEvent = await Event.findById(CurrentEventID)
 		const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
 		console.log(`updated excursion ${currentExcursion}`)
 		await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-		await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion).then(() => {
-			req.flash('success', 'Successful Payment')
-			res.redirect(`/event-owner/home/${CurrentEventID}`)
-		})
+		await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+		await Package.findByIdAndUpdate(ayreBelNabe[1], { packageOption: packageOptions })
+		req.flash('success', 'Successful Payment')
 	})
 
 

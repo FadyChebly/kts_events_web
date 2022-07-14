@@ -33,29 +33,10 @@ router.get("/:packageid/Excursion", async (req, res) => {
 		for (let i = 0; i < dbObj.length; i++) {
 			ws.cell(rowIndex, columnIndex++).string(dbObj[i].toString())
 		}
-		// Object.keys(item).forEach((colName) => {
-		// 	if (colName != "_id") {
-		// 		console.log(item[colName].toString())
-		// 		// ws.cell(rowIndex, columnIndex++).string(item[colName].toString())
-		// 	}
-
-		// })
 		rowIndex++;
 	})
 
 	wb.write("Excursion.xlsx", res)
-
-	// const file = desktopDir + "\Excursion.xlsx"
-	// console.log(file)
-	// const fileName = path.basename(file)
-	// const mimeType = mime.getType(file)
-	// res.setHeader("Content-Disposition", "attachment;filename=" + fileName)
-	// res.setHeader("Content-Type", mimeType)
-
-	// setTimeout(() => {
-	// 	res.download(file)
-	// 	console.log('success download')
-	// }, 2000);
 })
 
 router.get('/home', isLoggedIn, isAdmin, async (req, res) => {
