@@ -1,7 +1,13 @@
 <div class="box" style="width: 55%;">
 	<h2 class="header_two">Package Details</h2>
 	<% if(hasPackage){ %>
-		<form action="/kts-admin/<%= id %>/package/<%= packageId %>" method="post">
+		<form action="/kts-admin/<%= id %>/package/<%= packageId %>" novalidate method="post"
+			enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="image">Edit Uploaded Image</label>
+				<input class="form-control margin-element" type="file" id="image" name="image">
+			</div>
+
 			<input type="text" class="form-control margin-element" name="title" value="<%= package.title %> ">
 			<textarea class="form-control margin-element" type="text" name="description" cols="50"
 				rows="5"><%= package.description %></textarea>

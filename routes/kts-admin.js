@@ -141,15 +141,32 @@ router.route('/:id/package/:packageId')
 		let package = await Package.findById(packageId)
 		res.render('Kts-Admin/package', { layout: "./layouts/Admin/event", title: "Edit Package", id, hasPackage: true, package, packageId })
 	})
-	.post(isLoggedIn, isAdmin, async (req, res) => {
+	.post(isLoggedIn, isAdmin, upload.single('image'), async (req, res) => {
+		let imagedetails = await req.file
 		const { packageId } = req.params
 		const { id } = req.params
 		const newPackage = req.body
-		await Package.findByIdAndUpdate({ _id: packageId }, {
-			title: newPackage.title, description: newPackage.description, price: newPackage.price,
-			priceInclude: newPackage.priceInclude, priceExclude: newPackage.priceExclude, priceDemand: newPackage.priceDemand,
-			packageOption: [{ optionDescription: newPackage.option1, price: newPackage.price1, availableQuantity: newPackage.availability1 }, { optionDescription: newPackage.option2, price: newPackage.price2, availableQuantity: newPackage.availability2 }, { optionDescription: newPackage.option3, price: newPackage.price3, availableQuantity: newPackage.availability3 }, { optionDescription: newPackage.option4, price: newPackage.price4, availableQuantity: newPackage.availability4 }]
-		})
+		if (imagedetails) {
+			console.log('updated the image')
+			const deletedPackage = await Package.findById(packageId)
+			await cloudinary.uploader.destroy(deletedPackage.image_filename)
+			await Package.findByIdAndUpdate({ _id: packageId }, {
+				image_url: imagedetails.path, image_filename: imagedetails.filename,
+				title: newPackage.title, description: newPackage.description, price: newPackage.price,
+				priceInclude: newPackage.priceInclude, priceExclude: newPackage.priceExclude, priceDemand: newPackage.priceDemand,
+				packageOption: [{ optionDescription: newPackage.option1, price: newPackage.price1, availableQuantity: newPackage.availability1 }, { optionDescription: newPackage.option2, price: newPackage.price2, availableQuantity: newPackage.availability2 }, { optionDescription: newPackage.option3, price: newPackage.price3, availableQuantity: newPackage.availability3 }, { optionDescription: newPackage.option4, price: newPackage.price4, availableQuantity: newPackage.availability4 }]
+			})
+		}
+		else {
+			console.log('No update for the image')
+			await Package.findByIdAndUpdate({ _id: packageId }, {
+				title: newPackage.title, description: newPackage.description, price: newPackage.price,
+				priceInclude: newPackage.priceInclude, priceExclude: newPackage.priceExclude, priceDemand: newPackage.priceDemand,
+				packageOption: [{ optionDescription: newPackage.option1, price: newPackage.price1, availableQuantity: newPackage.availability1 }, { optionDescription: newPackage.option2, price: newPackage.price2, availableQuantity: newPackage.availability2 }, { optionDescription: newPackage.option3, price: newPackage.price3, availableQuantity: newPackage.availability3 }, { optionDescription: newPackage.option4, price: newPackage.price4, availableQuantity: newPackage.availability4 }]
+			})
+		}
+
+		console.log(imagedetails)
 		res.redirect(`/kts-admin/event/${id}`)
 	})
 
