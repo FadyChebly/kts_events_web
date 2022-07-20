@@ -23,9 +23,16 @@ const paypalClient = new paypal.core.PayPalHttpClient(
 
 router.route('/home/:eventid')
 	.get(isLoggedIn, isEventOwner, async (req, res) => {
+		const { q } = req.query
 		const { eventid } = req.params
 		const currentEvent = await Event.findById(eventid).populate('packages')
-		res.render('event-owner/home', { layout: "./layouts/Admin/event", title: "event owner", eventid, currentEvent })
+		if (q) {
+			console.log('serna bel flash')
+			req.flash('success', 'Successful Payment')
+		}
+		res.render('event-owner/home', { layout: "./layouts/Admin/event", title: "event owner", eventid, currentEvent, q })
+		console.log(`q:${q}`)
+
 	})
 
 router.route('/:eventid/:packageId/:optionNum')
@@ -118,8 +125,8 @@ router.route('/send-emails')
 		await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
 		await excursionMail(req, res, currentEventID, currentEvent, currentPackage, currentPackageOption, currentExcursion)
 		await Package.findByIdAndUpdate(paymentDetailsArr[1], { packageOption: packageOptions })
-		res.status(200).redirect(`/event-owner/home/${currentEventID}`)
-		req.flash('success', 'Successful Payment')
+		// res.send({ redirect: `/event-owner/home/${currentEventID}` })
+		res.sendStatus(200)
 	})
 
 

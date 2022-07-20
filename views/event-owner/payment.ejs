@@ -41,20 +41,32 @@ font-size: 16px;" href="/event-owner/home/<%= eventid %> ">Back To
 					})
 			},
 			onApprove: function (data, actions) {
-				return fetch("/event-owner/send-emails", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						items:
-						{
-							id: 1,
+				return actions.order.capture().then(() => {
+					const responsePromise = fetch("/event-owner/send-emails", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
 						},
-					}),
-				})
-				return actions.order.capture()
-			},
+						body: JSON.stringify({
+							items:
+							{
+								id: 1,
+							},
+						}),
+					})
+					responsePromise.then((responseFromServer) => {
+						if (responseFromServer.status === 200) {
+							location.href = '/event-owner/home/<%=eventid%>?q=true';
+						}
+						else {
+							alert('smth went wrong');
+							location.href = '/';
+						}
+
+					})
+
+				});
+			}
 		})
 		.render("#paypal")
 </script>
