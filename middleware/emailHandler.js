@@ -180,7 +180,7 @@ module.exports.voucherMail = async (req, res, currentEvent, currentPackage, curr
 	// });
 }
 
-module.exports.excursionMail = async (req, res, currentEvent, currentPackage, currentPackageOption, userData) => {
+module.exports.excursionMail = async (req, res, currentEventID, currentEvent, currentPackage, currentPackageOption, userData) => {
 	const accessToken = await oAuth2Client.getAccessToken()
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -267,6 +267,8 @@ module.exports.excursionMail = async (req, res, currentEvent, currentPackage, cu
 		}
 		else {
 			console.log('admin excursion success')
+			// req.flash('success', 'Successful Payment')
+			// res.redirect(`/event-owner/home/${currentEventID}`)
 		}
 	});
 }

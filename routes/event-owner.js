@@ -7,9 +7,9 @@ const { voucherMail, excursionMail } = require('../middleware/emailHandler')
 const { isLoggedIn, isEventOwner } = require('../middleware/loggedIn')
 require('dotenv').config()
 
-let ayreBelNabe = []
+let paymentDetailsArr = []
 let customer = {}
-CurrentEventID = 0
+currentEventID = 0
 
 const paypal = require('@paypal/checkout-server-sdk')
 const Environment =
@@ -41,7 +41,7 @@ router.route('/:eventid/:packageId/:optionNum')
 		const { eventid, packageId, optionNum } = req.params
 		const newExcursion = new Excursion({ packageID: packageId, ...req.body })
 		await newExcursion.save().then((result) => {
-			CurrentEventID = eventid
+			currentEventID = eventid
 			customer = newExcursion
 			res.redirect(`/event-owner/${eventid}/${packageId}/${optionNum}/pay`)
 		})
@@ -49,9 +49,9 @@ router.route('/:eventid/:packageId/:optionNum')
 
 router.route('/:eventid/:packageId/:optionNum/pay')
 	.get(isLoggedIn, isEventOwner, async (req, res) => {
-		ayreBelNabe = []
+		paymentDetailsArr = []
 		const { eventid, packageId, optionNum } = req.params
-		ayreBelNabe = [eventid, packageId, optionNum]
+		paymentDetailsArr = [eventid, packageId, optionNum]
 		const clientID = 'AT_-WItSvpf-wCa-8vSkYucgxl5Ckj5qSm013duHJpA78oYxTUkRhqlSlZrd4eNz4iNhhhZKVL9wWYl5'
 		res.render('event-owner/payment', { layout: "./layouts/event-owner/ensa", title: "Payment Info", eventid, packageId, optionNum, clientID })
 
@@ -59,8 +59,8 @@ router.route('/:eventid/:packageId/:optionNum/pay')
 
 router.route('/pay')
 	.post(isLoggedIn, isEventOwner, async (req, res) => {
-		const optionNum = ayreBelNabe[2]
-		const currentPackage = await Package.findById(ayreBelNabe[1])
+		const optionNum = paymentDetailsArr[2]
+		const currentPackage = await Package.findById(paymentDetailsArr[1])
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
 		const request = new paypal.orders.OrdersCreateRequest()
 		const total = currentPackageOption.price
@@ -105,19 +105,20 @@ router.route('/pay')
 
 router.route('/send-emails')
 	.post(async (req, res) => {
-		const optionNum = ayreBelNabe[2]
-		const currentPackage = await Package.findById(ayreBelNabe[1])
+		const optionNum = paymentDetailsArr[2]
+		const currentPackage = await Package.findById(paymentDetailsArr[1])
 		let packageOptions = currentPackage.packageOption
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
 		const currentPackageQty = currentPackage.packageOption[optionNum - 1].availableQuantity
 		packageOptions[optionNum - 1].availableQuantity = currentPackageQty - 1
 		console.log(`el options saro hek ${packageOptions}`)
-		const currentEvent = await Event.findById(CurrentEventID)
+		const currentEvent = await Event.findById(currentEventID)
 		const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
 		console.log(`updated excursion ${currentExcursion}`)
 		await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-		await excursionMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-		await Package.findByIdAndUpdate(ayreBelNabe[1], { packageOption: packageOptions })
+		await excursionMail(req, res, currentEventID, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+		await Package.findByIdAndUpdate(paymentDetailsArr[1], { packageOption: packageOptions })
+		res.status(200).redirect(`/event-owner/home/${currentEventID}`)
 		req.flash('success', 'Successful Payment')
 	})
 
