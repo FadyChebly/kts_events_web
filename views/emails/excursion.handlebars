@@ -41,16 +41,23 @@
 <body>
 	<header>
 		<img src="https://res.cloudinary.com/kts-france/image/upload/v1657143212/kts-logo_ttjxi2.png" alt="">
-		<h1 class="text-center">{{eventTitle}}</h1>
+		<h1 class="text-center">{{packageTitle}}</h1>
 	</header>
 	<img src=`{{packageUrl}}` class="rounded mx-auto d-block" alt="...">
 	<br> <br>
-	<p>Dear <b> {{lastName}} {{firstName}}</b></p>
-	<p>Thank you for your registration</p>
-	<p>You have successfully registered the following:</p>
-	<h2 class="text-center">{{eventTitle}}</h2>
-	<div>{{packageDescription}}</div>
-	<div>At the following price: {{packagePrice}} EUR</div>
+	<p>Estimado <b> {{lastName}} {{firstName}}</b></p>
+	<p>Gracias por su registro</p>
+	<p>Usted ha registrado con éxito lo siguiente</p>
+	<h2 class="text-center">{{packageTitle}}</h2>
+	<div>por favor no se olvide de imprimir este bono para presentarlo a nuestro servicio el día de sus excursiones
+	</div>
+	<div>Abajo la información de las excursiones</div>
+	<div>descripción: {{packageDescription}}</div>
+	<div>fecha: {{date}}</div>
+	<div>precio incluye: {{priceInclude}}</div>
+	<div>precio no incluye: {{priceExclude}}</div>
+	<div>consultar precio: {{priceDemand}}</div>
+	<div>al siguiente precio: {{packagePrice}} EUR</div>
 	<hr>
 	<br>
 	<br>
