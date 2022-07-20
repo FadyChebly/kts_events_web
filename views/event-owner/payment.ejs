@@ -53,6 +53,7 @@ font-size: 16px;" href="/event-owner/home/<%= eventid %> ">Back To
 						},
 					}),
 				})
+				fetch('/event-owner/home/<%=eventid %>')
 				return actions.order.capture()
 			},
 		})
