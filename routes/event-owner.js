@@ -9,6 +9,7 @@ require('dotenv').config()
 
 let paymentDetailsArr = []
 let customer = {}
+let excursion
 currentEventID = 0
 
 const paypal = require('@paypal/checkout-server-sdk')
@@ -50,6 +51,8 @@ router.route('/:eventid/:packageId/:optionNum')
 		await newExcursion.save().then((result) => {
 			currentEventID = eventid
 			customer = newExcursion
+			excursion = result
+			console.log(`Excursion: ${result}`)
 			res.redirect(`/event-owner/${eventid}/${packageId}/${optionNum}/pay`)
 		})
 	})
@@ -70,7 +73,9 @@ router.route('/pay')
 		const currentPackage = await Package.findById(paymentDetailsArr[1])
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
 		const request = new paypal.orders.OrdersCreateRequest()
-		const total = currentPackageOption.price
+		let packageQuantity = excursion.quantity
+		const total = currentPackageOption.price * packageQuantity
+		console.log(packageQuantity)
 		request.prefer("return=representation")
 		request.requestBody({
 			intent: "CAPTURE",
@@ -94,7 +99,7 @@ router.route('/pay')
 								currency_code: "EUR",
 								value: currentPackageOption.price,
 							},
-							quantity: 1,
+							quantity: packageQuantity,
 						}
 					}),
 				},
@@ -115,15 +120,16 @@ router.route('/send-emails')
 		const optionNum = paymentDetailsArr[2]
 		const currentPackage = await Package.findById(paymentDetailsArr[1])
 		let packageOptions = currentPackage.packageOption
+		let packageQuantity = excursion.quantity
 		const currentPackageOption = currentPackage.packageOption[optionNum - 1]
 		const currentPackageQty = currentPackage.packageOption[optionNum - 1].availableQuantity
-		packageOptions[optionNum - 1].availableQuantity = currentPackageQty - 1
+		packageOptions[optionNum - 1].availableQuantity = currentPackageQty - packageQuantity
 		console.log(`el options saro hek ${packageOptions}`)
 		const currentEvent = await Event.findById(currentEventID)
 		const currentExcursion = await Excursion.findByIdAndUpdate(customer._id, { success: true })
 		console.log(`updated excursion ${currentExcursion}`)
-		await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion)
-		await excursionMail(req, res, currentEventID, currentEvent, currentPackage, currentPackageOption, currentExcursion)
+		await voucherMail(req, res, currentEvent, currentPackage, currentPackageOption, currentExcursion, packageQuantity)
+		await excursionMail(req, res, currentEventID, currentEvent, currentPackage, currentPackageOption, currentExcursion, packageQuantity)
 		await Package.findByIdAndUpdate(paymentDetailsArr[1], { packageOption: packageOptions })
 		// res.send({ redirect: `/event-owner/home/${currentEventID}` })
 		res.sendStatus(200)

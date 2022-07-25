@@ -30,6 +30,9 @@ const ExcursionSchema = new Schema({
 	},
 	packageID: {
 		type: String,
+	},
+	quantity: {
+		type: Number,
 	}
 
 })

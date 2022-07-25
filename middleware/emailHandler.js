@@ -107,7 +107,7 @@ module.exports.contactUsRequest = async (req, res) => {
 	res.redirect('contact')
 }
 
-module.exports.voucherMail = async (req, res, currentEvent, currentPackage, currentPackageOption, userData) => {
+module.exports.voucherMail = async (req, res, currentEvent, currentPackage, currentPackageOption, userData, packageQuantity) => {
 	const accessToken = await oAuth2Client.getAccessToken()
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -180,7 +180,7 @@ module.exports.voucherMail = async (req, res, currentEvent, currentPackage, curr
 	// });
 }
 
-module.exports.excursionMail = async (req, res, currentEventID, currentEvent, currentPackage, currentPackageOption, userData) => {
+module.exports.excursionMail = async (req, res, currentEventID, currentEvent, currentPackage, currentPackageOption, userData, packageQuantity) => {
 	const accessToken = await oAuth2Client.getAccessToken()
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -229,7 +229,8 @@ module.exports.excursionMail = async (req, res, currentEventID, currentEvent, cu
 			packagePrice: currentPackageOption.price,
 			lastName: userData.lName,
 			firstName: userData.fName,
-			date: fulldate
+			date: fulldate,
+			packageQty: packageQuantity
 		}
 	};
 	transporter.sendMail(mailOptions, (err, res) => {
@@ -257,7 +258,8 @@ module.exports.excursionMail = async (req, res, currentEventID, currentEvent, cu
 			Phone: userData.phone,
 			whatsapp: userData.whatsapp,
 			dob: userData.dob,
-			paypalID: userData.paymentID
+			paypalID: userData.paymentID,
+			packageQty: packageQuantity
 
 		}
 	};
